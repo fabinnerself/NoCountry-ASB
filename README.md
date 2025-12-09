@@ -3,7 +3,9 @@
 ## 👥 Equipo
 **S11-25-Equipo 06-AI Agent**
 
-Puede visitar la plataforma en línea en : https://auto-story-builder-p94q.vercel.app/
+Puede visitar la plataforma FrontEnd en línea en :  https://asb-delta.vercel.app/ 
+
+El endpoint esta en : https://
 
 ### Integrantes
 *   **Mel Zárate** (Argentina) - Machine Learning

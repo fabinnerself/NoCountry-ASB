@@ -16,7 +16,7 @@ function getOptionalEnv(key: string, defaultValue: string): string {
 
 export const config = {
   server: {
-    port: parseInt(getOptionalEnv('PORT', '8000')),
+    port: parseInt(getOptionalEnv('PORT', '10000')),
     nodeEnv: getOptionalEnv('NODE_ENV', 'development'),
   },
   database: {
