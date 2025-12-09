@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: autostory-backend
+    name: autostory-backend proy
     runtime: docker
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     envVars:
       - key: NODE_ENV
         value: production
