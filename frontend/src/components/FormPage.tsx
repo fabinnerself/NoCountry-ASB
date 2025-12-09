@@ -83,7 +83,8 @@ export function FormPage() {
       console.log('Enviando solicitud a la API:', requestData);
 
       // Make API call
-      const response = await fetch('http://localhost:8000/api/generate-story', {
+      //const response = await fetch('http://localhost:8000/api/generate-story', {
+      const response = await fetch('https://nocountry-asb.onrender.com/api/generate-story', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

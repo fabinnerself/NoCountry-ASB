@@ -4,7 +4,7 @@ GET  http://localhost:8000/health
 
 ### generate-story
 
-POST http://localhost:10000/api/generate-story
+POST http://localhost:8000/api/generate-story
 Content-Type: application/json
 
 {
@@ -13,3 +13,15 @@ Content-Type: application/json
     "text": "juan, padre de 3 hijos, completó nuestro programa de emprendimiento. Ahora tiene su propia panadería y emplea a 2 personas de su comunidad."
 }
 
+### helth render
+get https://nocountry-asb.onrender.com/health 
+
+### generate-story render
+post https://nocountry-asb.onrender.com/api/generate-story
+Content-Type: application/json
+
+{
+    "tone": "INSPIRACIONAL",
+    "format": "HISTORIA",
+    "text": "juan, padre de 3 hijos, completó nuestro programa de emprendimiento. Ahora tiene su propia panadería y emplea a 2 personas de su comunidad."
+}
