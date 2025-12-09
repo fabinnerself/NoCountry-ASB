@@ -8,7 +8,7 @@ COPY backend/ ./backend/
 
 WORKDIR /app/backend
 
-# Install dependencies
+# Install all dependencies (including dev dependencies) for building
 RUN npm install
 
 # Build the application
@@ -26,6 +26,9 @@ WORKDIR /app/backend
 
 # Install only production dependencies
 RUN npm install --only=production
+
+# Copy built application from builder stage
+COPY --from=builder /app/backend/dist ./dist
 
 # Create a non-root user
 RUN addgroup -g 1001 -S nodejs

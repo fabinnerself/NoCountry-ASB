@@ -1,10 +1,10 @@
 ### healt
 
-GET http://localhost:8000/health
+GET  http://localhost:8000/health
 
 ### generate-story
 
-POST http://localhost:8000/api/generate-story
+POST http://localhost:10000/api/generate-story
 Content-Type: application/json
 
 {
