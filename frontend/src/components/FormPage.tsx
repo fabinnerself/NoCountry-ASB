@@ -1,18 +1,29 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import svgPaths from "../imports/svg-pkvk548t6z";
 import { Edit, RefreshCcw, Download } from "lucide-react";
+import { validateText } from "../utils/textValidations";
+import { runTests } from "../utils/validationTests";
 
 export function FormPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [textContent, setTextContent] = useState("");
-  const [tone, setTone] = useState("profesional");
-  const [format, setFormat] = useState("historia");
+  const [tone, setTone] = useState("INSPIRACIONAL");
+  const [format, setFormat] = useState("HISTORIA");
   const [generatedContent, setGeneratedContent] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [testLogs, setTestLogs] = useState<string[]>([]);
+  const [showTests, setShowTests] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Run TDD tests on mount
+    const logs = runTests();
+    setTestLogs(logs);
+  }, []);
 
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
@@ -47,15 +58,58 @@ export function FormPage() {
     }
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
+    setValidationError(null);
+
+    // Validate text content
+    const validation = validateText(textContent);
+    if (!validation.isValid) {
+      setValidationError(validation.error || "Error de validación desconocido");
+      return;
+    }
+
     setIsGenerating(true);
-    // Simulate AI generation
-    setTimeout(() => {
-      setGeneratedContent(
-        `Contenido generado con tono ${tone} en formato de ${format}:\n\n${textContent}\n\nArchivos adjuntos: ${files.length}`
-      );
+
+    try {
+      // Prepare the request data
+      const requestData = {
+        idUser: "123e4567-e89b-12d3-a456-426614174000",
+        operacion: "GENERAR",
+        tone: tone,
+        format: format,
+        text: textContent
+      };
+
+      console.log('Enviando solicitud a la API:', requestData);
+
+      // Make API call
+      const response = await fetch('http://localhost:8000/api/generate-story', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+      });
+
+      console.log('Respuesta de la API:', response.status, response.statusText);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error de la API:', response.status, errorText);
+        throw new Error(`Error en la API: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('Datos recibidos de la API:', data);
+
+      // Set the generated story content
+      setGeneratedContent(data.generatedStory);
+    } catch (error) {
+      console.error('Error al generar la historia:', error);
+      setGeneratedContent(`Error al generar la historia: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+    } finally {
       setIsGenerating(false);
-    }, 2000);
+    }
   };
 
   const handleExport = () => {
@@ -157,23 +211,29 @@ export function FormPage() {
               ingresa texto
             </p>
 
-            <textarea
+            <textarea id="textContenido"
               value={textContent}
-              onChange={(e) => setTextContent(e.target.value)}
-              maxLength={500}
-              placeholder="Escribe aquí tu contenido..."
-              className="w-full min-h-[100px] bg-white/10 text-white rounded-lg p-4 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              onChange={(e) => {
+                setTextContent(e.target.value);
+                if (validationError) setValidationError(null);
+              }}
+              maxLength={2500}
+              placeholder="Escribe aquí tu contenido (mínimo 20 caracteres)..."
+              className={`w-full min-h-[100px] font-['Inter',sans-serif] text-[24px] bg-white/10 text-white rounded-lg p-4 resize-none focus:outline-none focus:ring-2 ${validationError ? "focus:ring-red-500 border border-red-500" : "focus:ring-emerald-500"}`}
             />
 
-            <p className="font-['Inter',sans-serif] text-[20px] md:text-[24px] text-[#3f3f3f] text-center mt-2">
-              Límites de caracteres: {textContent.length}/500
-            </p>
+            <div className="flex justify-between items-start mt-2">
+              <p className={`font-['Inter',sans-serif] text-[16px] ${validationError ? "text-red-400" : "text-white"}`}>
+                {validationError || `Límites de caracteres: ${textContent.length}/1000`}
+              </p>
+            </div>
           </div>
 
           {/* Tone and Format Selectors */}
           <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
             <div className="relative">
               <select
+                id="cbxTone"
                 value={tone}
                 onChange={(e) => setTone(e.target.value)}
                 className="bg-[#041f59] rounded-[15px] px-6 py-5 font-['Julius_Sans_One',sans-serif] text-[20px] text-white appearance-none pr-12 cursor-pointer w-full md:w-[262px]"
@@ -194,6 +254,7 @@ export function FormPage() {
 
             <div className="relative">
               <select
+                id="cbxFormat"
                 value={format}
                 onChange={(e) => setFormat(e.target.value)}
                 className="bg-[#041f59] rounded-[15px] px-6 py-5 font-['Julius_Sans_One',sans-serif] text-[20px] text-white appearance-none pr-12 cursor-pointer w-full md:w-[348px]"
@@ -218,7 +279,7 @@ export function FormPage() {
           <div className="flex justify-center mb-12">
             <button
               onClick={handleGenerate}
-              disabled={isGenerating || (!files.length && !textContent)}
+              disabled={isGenerating}
               className="bg-[#041f59] rounded-[15px] px-16 py-6 font-['Julius_Sans_One',sans-serif] text-[32px] md:text-[40px] text-white hover:bg-[#062a7a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isGenerating ? "Generando..." : "Crear"}
@@ -228,8 +289,11 @@ export function FormPage() {
           {/* Result Area */}
           {generatedContent && (
             <div className="mb-8">
-              <div className="bg-[#d9d9d9] rounded-[15px] p-8 min-h-[453px] mb-4">
-                <p className="whitespace-pre-wrap text-[18px]">{generatedContent}</p>
+              <div className="bg-[#d9d9d9] rounded-[15px] p-8 h-[453px] mb-4">
+                {/*
+                <p className="whitespace-pre-wrap text-[18px]">  {generatedContent}</p>
+                    */}
+                <textarea className="whitespace-pre-wrap text-[18px] w-full h-full resize-none" value={generatedContent} onChange={(e) => setGeneratedContent(e.target.value)} ></textarea>
               </div>
 
               {/* Edit and Retry Links */}
@@ -263,6 +327,30 @@ export function FormPage() {
               </div>
             </div>
           )}
+
+          {/* TDD Results Panel */}
+          {/*
+          <div className="mt-12 border-t border-slate-300 pt-8">
+            <button
+              onClick={() => setShowTests(!showTests)}
+              className="flex items-center gap-2 text-slate-600 hover:text-slate-800 mb-4 mx-auto"
+            >
+              {showTests ? "Ocultar Pruebas de Validación" : "Ver Pruebas de Validación (TDD)"}
+            </button>
+            
+
+            {showTests && (
+              <div className="bg-slate-900 text-green-400 p-6 rounded-lg font-mono text-sm max-h-[300px] overflow-y-auto max-w-[800px] mx-auto shadow-xl">
+                <h3 className="text-white font-bold mb-4 border-b border-slate-700 pb-2">Resultados de Pruebas Automatizadas</h3>
+                {testLogs.map((log, i) => (
+                  <div key={i} className={`${log.includes("❌") ? "text-red-400 font-bold" : "text-green-400"}`}>
+                    {log}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          */}
         </div>
       </div>
 
