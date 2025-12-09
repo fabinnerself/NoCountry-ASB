@@ -20,6 +20,10 @@ Este proyecto utiliza las siguientes tecnologías y librerías:
 - **Notificaciones:** [Sonner](https://sonner.emilkowal.ski/)
 - **Temas:** [Next Themes](https://github.com/pacocoursey/next-themes)
 - **Despliegue:** [Vercel](https://vercel.com/)
+- **Vite:** [Vite](https://vitejs.dev/)
+- **React** (v18+)
+- **Tailwind CSS** 
+- **Vercel** (v0.1.0)   
 
 ## 🚀 Correr el codigo 
 
