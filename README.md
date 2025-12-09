@@ -5,7 +5,8 @@
 
 Puede visitar la plataforma FrontEnd en línea en :  https://asb-delta.vercel.app/ 
 
-El endpoint esta en : https://
+El endpoint esta disponible en linea en : [health](https://nocountry-asb.onrender.com/health)
+
 
 ### Integrantes
 *   **Mel Zárate** (Argentina) - Machine Learning
