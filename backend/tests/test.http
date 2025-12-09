@@ -1,0 +1,15 @@
+### healt
+
+GET http://localhost:8000/health
+
+### generate-story
+
+POST http://localhost:8000/api/generate-story
+Content-Type: application/json
+
+{
+    "tone": "INSPIRACIONAL",
+    "format": "HISTORIA",
+    "text": "juan, padre de 3 hijos, completó nuestro programa de emprendimiento. Ahora tiene su propia panadería y emplea a 2 personas de su comunidad."
+}
+
