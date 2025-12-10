@@ -1,65 +1,53 @@
-import { Tone, Format } from '../schemas/storyRequest.schema';
+import { ValidTone, ValidFormat } from './validation';
 
-export const BASE_PROMPT = `Eres un asistente especializado en crear narrativas de impacto social. 
-Tu tarea es generar una historia con las siguientes características:
+export const PROMPT_TEMPLATES = {
+  BASE: `Eres un escritor experto en narrativa de impacto. Tu tarea es generar una historia coherente, emocionalmente resonante y profesional.
 
-TONO: {tone}
-{toneGuidelines}
+RESTRICCIONES OBLIGATORIAS:
+- Longitud: EXACTAMENTE entre 80 y 120 palabras
+- Estructura: Gancho inicial → Desarrollo → Cierre
+- Formato de salida: {format}
+- Tono narrativo: {tone}
+{ctaRequirement}
 
-FORMATO: {format}
-{formatGuidelines}
-
-CONTEXTO:
+INFORMACIÓN BASE:
 {text}
 
-INSTRUCCIONES CRÍTICAS:
-1. La historia debe tener entre 80 y 120 palabras
-2. Debe estar escrita en español
-3. Debe ser coherente con el contexto proporcionado
-4. Debe reflejar el tono especificado
-5. Debe adaptarse al formato indicado
-6. Mantén un estilo profesional pero accesible
+{visualContext}
 
-Genera la historia ahora:`;
+GENERA LA HISTORIA (80-120 palabras):`,
 
-export const TONE_GUIDELINES: Record<Tone, string> = {
-  INSPIRACIONAL: `- Usa un lenguaje emotivo y motivador
-- Enfócate en la superación y el logro
-- Incluye elementos de esperanza y transformación
-- Conecta emocionalmente con el lector
-- Destaca el impacto humano`,
+  CTA_REQUIREMENT: `- INCLUIR Call-to-Action al final`,
+  NO_CTA: '',
 
-  EDUCATIVO: `- Usa un lenguaje claro y didáctico
-- Estructura la información de manera lógica
-- Explica conceptos de forma accesible
-- Incluye datos concretos cuando sea relevante
-- Enfócate en el aprendizaje y comprensión`,
+  VISUAL_CONTEXT_WITH_CAPTIONS: `CONTEXTO VISUAL (de la imagen proporcionada):
+{captions}
 
-  TÉCNICO: `- Usa terminología profesional apropiada
-- Enfócate en procesos y metodologías
-- Mantén un tono formal y objetivo
-- Incluye detalles específicos
-- Prioriza la precisión sobre la emoción`,
+Integra este contexto visual en la narrativa de forma natural y relevante.`,
+
+  VISUAL_CONTEXT_WITHOUT: '',
 };
 
-export const FORMAT_GUIDELINES: Record<Format, string> = {
-  HISTORIA: `- Estructura: inicio, desarrollo y cierre
-- Narrativa completa con arco dramático
-- Incluye personajes y situaciones concretas
-- Desarrollo coherente de principio a fin`,
+export function buildPrompt(
+  tone: ValidTone,
+  format: ValidFormat,
+  text: string,
+  imageCaptions?: string[]
+): string {
+  const ctaRequirement =
+    format === 'REDES_SOCIALES' ? PROMPT_TEMPLATES.CTA_REQUIREMENT : PROMPT_TEMPLATES.NO_CTA;
 
-  POST: `- Formato de blog o artículo breve
-- Introducción, desarrollo y conclusión
-- Párrafos cortos y fáciles de leer
-- Puede incluir subtítulos o énfasis`,
+  const visualContext =
+    imageCaptions && imageCaptions.length > 0
+      ? PROMPT_TEMPLATES.VISUAL_CONTEXT_WITH_CAPTIONS.replace(
+          '{captions}',
+          imageCaptions.map((caption, idx) => `${idx + 1}. ${caption}`).join('\n')
+        )
+      : PROMPT_TEMPLATES.VISUAL_CONTEXT_WITHOUT;
 
-  REDES_SOCIALES: `- Texto optimizado para redes sociales (Instagram, Facebook, LinkedIn)
-- Incluye emojis relevantes para dar énfasis
-- Agrega 3-4 hashtags relacionados al final
-- Incluye un llamado a la acción (CTA)
-- Formato visual: párrafos cortos con saltos de línea`,
-
-  OTRO: `- Formato flexible adaptado al contexto
-- Mantén coherencia narrativa
-- Prioriza claridad y impacto`,
-};
+  return PROMPT_TEMPLATES.BASE.replace('{format}', format)
+    .replace('{tone}', tone)
+    .replace('{ctaRequirement}', ctaRequirement)
+    .replace('{text}', text)
+    .replace('{visualContext}', visualContext);
+}

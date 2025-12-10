@@ -1,15 +1,13 @@
-import app from './app';
-import { config } from './config/env';
-import { logInfo, logError } from './utils/logger';
+import { createApp } from './app';
+import { env } from './config/env';
+import logger from './utils/logger';
 
-const PORT = config.server.port;
+const app = createApp();
+const PORT = parseInt(env.PORT, 10);
 
 app.listen(PORT, () => {
-  logInfo(`Server running on port ${PORT}`);
-  logInfo(`Environment: ${config.server.nodeEnv}`);
-  logInfo(`Health check available at http://localhost:${PORT}/health`);
-  logInfo(`API endpoint: http://localhost:${PORT}/api/generate-story`);
-}).on('error', (error: Error) => {
-  logError('Failed to start server', error);
-  process.exit(1);
+  logger.info(`🚀 AutoStory Builder - Phase 1 running on port ${PORT}`);
+  logger.info(`📝 Environment: ${env.NODE_ENV}`);
+  logger.info(`🌐 CORS enabled for: ${env.FRONTEND_URL_LOCAL}, ${env.FRONTEND_URL}`);
+  logger.info(`✅ Health check: http://localhost:${PORT}/health`);
 });

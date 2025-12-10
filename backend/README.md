@@ -1,154 +1,307 @@
-# 👩‍🚀 AutoStory Builder BACKEND 
+# AutoStory Builder - Phase 1
 
-## 📚 Documentación de Despliegue
+> AI-powered story generation with image processing
 
-La documentación completa de despliegue en **Render** se encuentra en: `doc/render/`
+## 🎯 Overview
 
-### 🚀 Comienza Aquí
+AutoStory Builder transforms images and text into compelling narratives using AI. Phase 1 introduces **image processing** capabilities, extracting visual context to enrich story generation.
 
-**Para desplegar en Render**, lee estos archivos en orden:
+### Key Features
 
-1. **[`doc/render/COMIENZA_AQUI.md`](./doc/render/COMIENZA_AQUI.md)** ⭐ - Resumen ejecutivo (5 min)
-2. **[`doc/render/README_DEPLOYMENT.md`](./doc/render/README_DEPLOYMENT.md)** - Guía completa (15 min)
-3. **[`doc/render/COMMANDS_READY_TO_COPY.md`](./doc/render/COMMANDS_READY_TO_COPY.md)** - Comandos listos (3 min)
-
-### 📖 Documentación Adicional
-
-- **[RENDER_SETUP.md](./doc/render/RENDER_SETUP.md)** - Guía rápida
-- **[STATUS_REPORT.md](./doc/render/STATUS_REPORT.md)** - Reporte de estado actual
-- **[DEPLOYMENT_CHECKLIST.md](./doc/render/DEPLOYMENT_CHECKLIST.md)** - Verificaciones técnicas
-- **[DEPLOYMENT_GUIDE.md](./doc/render/DEPLOYMENT_GUIDE.md)** - Guía detallada
-- **[FRONTEND_INTEGRATION.md](./doc/render/FRONTEND_INTEGRATION.md)** - Conectar con Vercel
-- **[FLOW_DIAGRAM.md](./doc/render/FLOW_DIAGRAM.md)** - Diagrama de arquitectura
-- **[INDEX_DOCS.md](./doc/render/INDEX_DOCS.md)** - Índice completo
-- **[SETUP_SUMMARY.md](./doc/render/SETUP_SUMMARY.md)** - Resumen de cambios
+- ✅ **Image Analysis:** Extract visual captions using Cohere Vision AI
+- ✅ **Multi-tone Support:** INSPIRACIONAL, EDUCATIVO, TÉCNICO
+- ✅ **Multi-format Output:** HISTORIA, POST, REDES_SOCIALES, OTRO
+- ✅ **Smart Validation:** 80-120 words, structure, tone matching, CTA
+- ✅ **Robust Error Handling:** Retries, timeouts, detailed error messages
+- ✅ **Full Test Coverage:** 80%+ with unit, integration, and E2E tests
 
 ---
 
-## 🛠 Tecnologías Utilizadas
+## 🚀 Quick Start
 
-Este proyecto utiliza las siguientes tecnologías:
+### Prerequisites
 
-- **Node.js** - Runtime
-- **Express.js** - Framework web
-- **TypeScript** - Tipado estático
-- **Cohere AI** - LLM para generación de historias
-- **Zod** - Validación de esquemas
-- **Docker** - Containerización
-- **Prisma** (preparado para Fase 1) - ORM
+- Node.js ≥18.0.0
+- npm ≥9.0.0
+- Cohere API Key ([Get one here](https://cohere.com))
 
----
-
-## 🚀 Desarrollo Local
-
-### Requerimientos
-- Node.js 18+
-- npm
-
-### Instalación
+### Installation
 
 ```bash
+# Clone repository
+git clone https://github.com/fabinnerself/NoCountry-ASB.git
+cd NoCountry-ASB/0code
+
+# Install dependencies
 npm install
+
+# Setup environment
+cp .env.example .env
+# Edit .env and add your COHERE_API_KEY
 ```
 
-### Desarrollo
+### Run Development Server
 
 ```bash
 npm run dev
 ```
 
-Accede a `http://localhost:10000`
+Server will start on `http://localhost:8000`
 
-### Build
+---
 
-```bash
-npm run build
-```
+## 📋 API Usage
 
-### Start (Producción)
+### Generate Story with Image
 
 ```bash
-npm start
+curl -X POST http://localhost:8000/api/generate-story \
+  -F "tone=INSPIRACIONAL" \
+  -F "format=REDES_SOCIALES" \
+  -F "text=Joven emprendedora superó obstáculos para crear su empresa" \
+  -F "image=@path/to/image.jpg"
 ```
 
-### Tests
+### Response
+
+```json
+{
+  "success": "ok",
+  "generatedStory": "En una comunidad rural, María transformó su pasión...",
+  "validation": {
+    "tone": "ok",
+    "format": "ok",
+    "text": "ok",
+    "image": "ok"
+  },
+  "metadata": {
+    "wordCount": 95,
+    "tone": "INSPIRACIONAL",
+    "format": "REDES_SOCIALES",
+    "imageProcessed": true,
+    "imageCaptions": ["Emprendedora con laptop", "Espacio creativo"],
+    "generatedAt": "2025-12-09T14:30:22.000Z",
+    "model": "command-r-plus",
+    "processingTimeMs": 3847
+  }
+}
+```
+
+---
+
+## 🧪 Testing
+
+### Run All Tests
 
 ```bash
 npm test
 ```
 
+### Run with Coverage
+
+```bash
+npm run test:coverage
+```
+
+### Test Suites
+
+- **Unit Tests:** `npm run test:unit`
+- **Integration Tests:** `npm run test:integration`
+- **E2E Tests:** `npm run test:e2e`
+
+**Target Coverage:** ≥80%
+
 ---
 
-## 📋 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
-backend/
+0code/
 ├── src/
-│   ├── app.ts              # Express app
-│   ├── server.ts           # Entry point
-│   ├── config/
-│   │   ├── env.ts          # Configuración
-│   │   └── cohere.ts       # Configuración Cohere
-│   ├── controllers/        # Controladores
-│   ├── routes/             # Rutas
-│   ├── services/           # Servicios de negocio
-│   ├── schemas/            # Esquemas Zod
-│   ├── middleware/         # Middlewares
-│   └── utils/              # Utilidades
-├── tests/                  # Tests
-├── doc/
-│   └── render/             # Documentación Render
-├── render.yaml             # Configuración Render
-├── Dockerfile              # Docker
+│   ├── config/          # Environment, Cohere, CORS
+│   ├── constants/       # Validation rules, prompts, errors
+│   ├── controllers/     # Request handlers
+│   ├── middleware/      # Multer, validation, error handling
+│   ├── routes/          # API routes
+│   ├── schemas/         # Zod validation schemas
+│   ├── services/        # Business logic
+│   │   ├── imageAnalyzer.service.ts    # NEW
+│   │   ├── promptBuilder.service.ts    # UPDATED
+│   │   ├── storyGenerator.service.ts   # UPDATED
+│   │   └── outputValidator.service.ts  # UPDATED
+│   └── utils/           # Helpers, logger
+│
+├── tests/
+│   ├── fixtures/        # Test data, images
+│   └── img/
+│       ├── unit/        # Unit tests
+│       ├── integration/ # Integration tests
+│       └── e2e/         # E2E tests
+│
+├── doc/img/
+│   ├── 0_API_REFERENCE.md
+│   ├── 1_IMPLEMENTATION_GUIDE.md
+│   ├── 2_IMAGE_PROCESSING.md
+│   ├── 3_TESTING_STRATEGY.md
+│   └── postman_collection.json
+│
+├── package.json
 ├── tsconfig.json
-└── package.json
+├── jest.config.js
+└── README.md
 ```
 
 ---
 
-## 🌍 Despliegue
+## 🔧 Configuration
 
-### Render (Recomendado)
-
-Ver **[`doc/render/COMIENZA_AQUI.md`](./doc/render/COMIENZA_AQUI.md)**
-
-**Tiempo estimado:** 20-30 minutos
-
----
-
-## 🔑 Variables de Entorno
+### Environment Variables
 
 ```env
+PORT=8000
 NODE_ENV=development
-PORT=10000
-COHERE_API_KEY=tu_clave_aqui
-FRONTEND_URL=http://localhost:5173
+COHERE_API_KEY=your-api-key-here
 FRONTEND_URL_LOCAL=http://localhost:5173
+FRONTEND_URL=https://frontend.vercel.app
+LOG_LEVEL=info
+MAX_FILE_SIZE=10485760
 ```
 
-Ver `.env.example` para todas las variables disponibles.
+---
+
+## 📚 Documentation
+
+- **[API Reference](doc/img/0_API_REFERENCE.md)** - Complete API documentation
+- **[Implementation Guide](doc/img/1_IMPLEMENTATION_GUIDE.md)** - Architecture and components
+- **[Image Processing](doc/img/2_IMAGE_PROCESSING.md)** - How image analysis works
+- **[Testing Strategy](doc/img/3_TESTING_STRATEGY.md)** - Testing approach and coverage
+- **[Postman Collection](doc/img/postman_collection.json)** - Ready-to-use API requests
 
 ---
 
-## 📊 API Endpoints
+## 🎨 Supported Formats
 
-- `GET /health` - Health check
-- `POST /api/generate-story` - Generar historia
+### Image Formats
+
+- **JPEG** (.jpg, .jpeg)
+- **PNG** (.png)
+- **WEBP** (.webp)
+
+**Max Size:** 10 MB
+
+### Tones
+
+- **INSPIRACIONAL** - Uplifting, motivational narratives
+- **EDUCATIVO** - Informative, teaching-focused stories
+- **TÉCNICO** - Precise, technical descriptions
+
+### Formats
+
+- **HISTORIA** - Full narrative structure
+- **POST** - Blog-style content
+- **REDES_SOCIALES** - Social media optimized (includes CTA)
+- **OTRO** - Custom format
 
 ---
 
-## 🎯 Próximas Fases
+## 🛠️ Development
 
-- **Fase 0 (Actual)** ✅ - API sin BD
-- **Fase 1** - PostgreSQL + Usuarios
-- **Fase 2** - Autenticación + Persistencia
+### Linting
+
+```bash
+npm run lint          # Check for errors
+npm run lint:fix      # Auto-fix errors
+```
+
+### Formatting
+
+```bash
+npm run format        # Format code
+npm run format:check  # Check formatting
+```
+
+### Build
+
+```bash
+npm run build         # Compile TypeScript
+npm start             # Run production build
+```
 
 ---
 
-## 📞 Soporte
+## 🔍 Troubleshooting
 
-Para problemas con el despliegue, revisa `doc/render/README_DEPLOYMENT.md` sección Troubleshooting.
+### Common Issues
+
+**"COHERE_API_KEY is required"**
+- Add your Cohere API key to `.env` file
+
+**"File too large" (413)**
+- Compress your image to under 10MB
+
+**Timeout errors**
+- Check network connection to Cohere API
+- Verify API key is valid
+
+**Validation errors**
+- Ensure all required fields are present
+- Check tone and format values match allowed enums
 
 ---
 
-**Status**: ✅ Listo para desplegar en Render
+## 🚦 Roadmap
+
+### ✅ Phase 1 (Current)
+- Image processing with AI
+- Multi-tone/format support
+- Comprehensive testing
+
+### 🔜 Phase 2
+- PostgreSQL persistence
+- User authentication
+- CRUD endpoints
+- Frontend integration
+
+### 🌟 Phase 3+
+- RAG (Retrieval Augmented Generation)
+- OCR text extraction
+- Multi-image support
+- Export to PDF/DOCX
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Write tests (TDD)
+4. Implement feature
+5. Ensure all tests pass (`npm test`)
+6. Commit changes (`git commit -m 'Add amazing feature'`)
+7. Push to branch (`git push origin feature/amazing-feature`)
+8. Open Pull Request
+
+---
+
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+---
+
+## 👥 Team
+
+AutoStory Builder Team - NoCountry Project
+
+---
+
+## 🙏 Acknowledgments
+
+- [Cohere AI](https://cohere.com) - AI models
+- [Express](https://expressjs.com) - Web framework
+- [Zod](https://zod.dev) - Schema validation
+- [Jest](https://jestjs.io) - Testing framework
+
+---
+
+**Built with ❤️ using TypeScript, Express, and Cohere AI**

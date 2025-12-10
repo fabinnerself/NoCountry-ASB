@@ -1,17 +1,14 @@
 import { CohereClient } from 'cohere-ai';
-import { config } from './env';
-import { logInfo, logError } from '../utils/logger';
+import { env } from './env';
+import logger from '../utils/logger';
 
-let cohereClient: CohereClient;
-
-try {
-  cohereClient = new CohereClient({
-    token: config.cohere.apiKey,
-  });
-  logInfo('Cohere client initialized successfully');
-} catch (error) {
-  logError('Failed to initialize Cohere client', error);
-  throw error;
+if (!env.COHERE_API_KEY) {
+  logger.error('COHERE_API_KEY not found in environment variables');
+  throw new Error('COHERE_API_KEY is required');
 }
 
-export { cohereClient };
+export const cohereClient = new CohereClient({
+  token: env.COHERE_API_KEY,
+});
+
+logger.info('Cohere client initialized successfully');

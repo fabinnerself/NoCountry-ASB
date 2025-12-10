@@ -1,13 +1,24 @@
-import { StoryRequest } from '../schemas/storyRequest.schema';
-import { BASE_PROMPT, TONE_GUIDELINES, FORMAT_GUIDELINES } from '../constants/prompts';
+import { ValidTone, ValidFormat } from '../constants/validation';
+import { buildPrompt as buildPromptTemplate } from '../constants/prompts';
+import logger from '../utils/logger';
 
-export function buildPrompt(request: StoryRequest): string {
-  const toneGuideline = TONE_GUIDELINES[request.tone];
-  const formatGuideline = FORMAT_GUIDELINES[request.format];
+export class PromptBuilderService {
+  buildPrompt(
+    tone: ValidTone,
+    format: ValidFormat,
+    text: string,
+    imageCaptions?: string[]
+  ): string {
+    logger.info('Building prompt', {
+      tone,
+      format,
+      textLength: text.length,
+      captionsCount: imageCaptions?.length || 0,
+    });
 
-  return BASE_PROMPT.replace('{tone}', request.tone)
-    .replace('{toneGuidelines}', toneGuideline)
-    .replace('{format}', request.format)
-    .replace('{formatGuidelines}', formatGuideline)
-    .replace('{text}', request.text);
+    const prompt = buildPromptTemplate(tone, format, text, imageCaptions);
+
+    logger.debug('Prompt built successfully', { promptLength: prompt.length });
+    return prompt;
+  }
 }

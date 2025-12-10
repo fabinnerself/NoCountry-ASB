@@ -1,29 +1,31 @@
-import express, { Express } from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
-import { config } from './config/env';
+import helmet from 'helmet';
+import { corsOptions } from './config/cors';
 import routes from './routes';
 import { errorHandler } from './middleware/errorHandler.middleware';
-import { logInfo } from './utils/logger';
+import logger from './utils/logger';
 
-const app: Express = express();
+export function createApp(): Application {
+  const app = express();
 
-app.use(express.json());
+  app.use(helmet());
+  app.use(cors(corsOptions));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
-app.use(
-  cors({
-    origin: [config.cors.frontendUrlLocal, config.cors.frontendUrl, 'http://localhost:3000'],
-    credentials: true,
-  })
-);
+  app.use((req, _res, next) => {
+    logger.info(`${req.method} ${req.path}`);
+    next();
+  });
 
-logInfo('CORS configured for frontend URLs');
+  app.get('/health', (_req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
 
-app.use(routes);
+  app.use(routes);
 
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', message: 'AutoStory Builder API - Fase 0' });
-});
+  app.use(errorHandler);
 
-app.use(errorHandler);
-
-export default app;
+  return app;
+}

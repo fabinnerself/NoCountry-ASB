@@ -1,23 +1,84 @@
-### healt
+### Health Check Local
+GET http://localhost:8000/health
 
-GET  http://localhost:8000/health
+### Generate Story - Solo texto (sin imagen) - INSPIRACIONAL + HISTORIA
+POST http://localhost:8000/api/generate-story
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="tone"
+
+INSPIRACIONAL
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="format"
+
+HISTORIA
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="text"
+
+juan, padre de 3 hijos, completó nuestro programa de emprendimiento. Ahora tiene su propia panadería y emplea a 2 personas de su comunidad.
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Generate Story - Solo texto - EDUCATIVO + POST
+POST http://localhost:8000/api/generate-story
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="tone"
+
+EDUCATIVO
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="format"
+
+POST
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="text"
+
+Aprende sobre desarrollo sostenible y su impacto en las comunidades rurales mediante proyectos de agricultura orgánica.
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Generate Story - Solo texto - TÉCNICO + REDES_SOCIALES
+POST http://localhost:8000/api/generate-story
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="tone"
+
+TÉCNICO
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="format"
+
+REDES_SOCIALES
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="text"
+
+Implementación de sistema de riego automatizado con sensores IoT para optimizar el uso del agua en cultivos.
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Health Check Render
+GET https://nocountry-asb.onrender.com/health 
+
+### Generate Story Render - Solo texto
+POST https://nocountry-asb.onrender.com/api/generate-story
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="tone"
+
+INSPIRACIONAL
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="format"
+
+HISTORIA
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="text"
+
+juan, padre de 3 hijos, completó nuestro programa de emprendimiento. Ahora tiene su propia panadería y emplea a 2 personas de su comunidad.
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ### generate-story
 
 POST http://localhost:8000/api/generate-story
-Content-Type: application/json
-
-{
-    "tone": "INSPIRACIONAL",
-    "format": "HISTORIA",
-    "text": "juan, padre de 3 hijos, completó nuestro programa de emprendimiento. Ahora tiene su propia panadería y emplea a 2 personas de su comunidad."
-}
-
-### helth render
-get https://nocountry-asb.onrender.com/health 
-
-### generate-story render
-post https://nocountry-asb.onrender.com/api/generate-story
 Content-Type: application/json
 
 {

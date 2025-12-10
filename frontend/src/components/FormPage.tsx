@@ -71,25 +71,25 @@ export function FormPage() {
     setIsGenerating(true);
 
     try {
-      // Prepare the request data
-      const requestData = {
-        idUser: "123e4567-e89b-12d3-a456-426614174000",
-        operacion: "GENERAR",
-        tone: tone,
-        format: format,
-        text: textContent
-      };
+      // Prepare FormData for multipart/form-data (supports image upload)
+      const formData = new FormData();
+      formData.append('tone', tone);
+      formData.append('format', format);
+      formData.append('text', textContent);
+      
+      // Add image if one is selected
+      if (files.length > 0) {
+        formData.append('image', files[0]); // Send first image
+      }
 
-      console.log('Enviando solicitud a la API:', requestData);
+      console.log('Enviando solicitud a la API con imagen:', files.length > 0 ? 'Sí' : 'No');
 
       // Make API call
       //const response = await fetch('http://localhost:8000/api/generate-story', {
       const response = await fetch('https://nocountry-asb.onrender.com/api/generate-story', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData)
+        // Don't set Content-Type header - browser will set it automatically with boundary
+        body: formData
       });
 
       console.log('Respuesta de la API:', response.status, response.statusText);
@@ -187,7 +187,7 @@ export function FormPage() {
               </p>
 
               <p className="font-['Inter',sans-serif] text-[20px] md:text-[24px] text-[#3f3f3f] text-center">
-                Soporte: JPG, PNG, WEBP, videos, testimonios &lt; 50 MB
+                Soporte: JPG, PNG, WEBP, videos, testimonios &lt; 10 MB
               </p>
 
               {files.length > 0 && (
