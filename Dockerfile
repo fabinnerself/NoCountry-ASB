@@ -34,6 +34,9 @@ COPY --from=builder /app/backend/dist ./dist
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
 
+# Create logs directory with proper permissions
+RUN mkdir -p logs && chown -R nodejs:nodejs logs
+
 USER nodejs
 
 EXPOSE 10000
