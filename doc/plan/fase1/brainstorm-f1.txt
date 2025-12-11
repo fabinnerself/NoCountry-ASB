@@ -1,0 +1,257 @@
+1 antecendetne codigo de fornt ent/backe local y en linea: vercel ->frontEnd) y render-> backend
+2 fase 0 plan, taks en dir fase0 "C:\nocountry\3\plan\fase0"
+3 no desarrollar de 0 sobre actual codigo imlemntar con  tdd, 4ta variable imagen de manera que con camption
+    determine elementos y esos textos (captions) los ponga en el promt parametrico y genere mejor resultado de hisotoria
+    el catual model ia cohere podra? si no proponer otro modelo ia gratuito
+    no validar que la imagen sea valida sino que con una imagen de prueba desarrollar si al final el resultado
+    funciona con la imagen asumire que funciona con cualquier imagen y luego validare
+
+
+# Fase/Iteración 1: Desarrollo de 4ta variable imagen
+## 🎯 Objetivo General - Iteración 1
+Desarrollar y validar la función base que obtendra los captions de 1 imagen que será llamada desde el endpoint `/api/generate-story`, utilizando TDD y preparando la infraestructura para fases posteriores con PostgreSQL .
+
+## Objetivo Final (Full Project)
+Desarrollar AutoStory Builder completo según la definición en `desc_gral_proy_auto_store-builder.txt`: sistema de IA para generar historias visuales y textuales a partir de inputs multimedia, con panel de edición, exportación y RAG.
+
+## 📋 Alcance de Fase 1
+
+### Endpoint Principal: POST /api/generate-story
+
+**Input JSON:**
+```json
+{
+  "tone": "INSPIRACIONAL" | "EDUCATIVO" | "TÉCNICO",
+  "format": "HISTORIA" | "POST" | "REDES_SOCIALES" | "OTRO",
+  "text": "string (min 20, max 1000 chars)",
+  "image": JPG, PNG, WEBP, testimonios < 10 MB
+}
+```
+
+**Output JSON:**
+```json
+{
+  "success": "ok",
+  "generatedStory": "string (historia generada)",
+  "validation": {
+    "tone": "ok" | "error",
+    "format": "ok" | "error",
+    "text": "ok" | "error",
+    "image":"ok"| "error"
+  },
+  "metadata": {
+    "wordCount": 95,
+    "tone": "INSPIRACIONAL",
+    "format": "REDES_SOCIALES",
+    "generatedAt": "2025-12-09T02:13:27.227Z",
+    "model": "command-r-plus"
+  }
+}
+```
+
+### Entrada (4 variables iniciales)
+- `tone`: String - Tono de la narrativa
+  - Valores válidos: "INSPIRACIONAL", "EDUCATIVO", "TÉCNICO"
+- `format`: String - Formato de salida
+  - Valores válidos: "HISTORIA", "POST", "REDES_SOCIALES", "OTRO"
+- `text`: String - Contexto/información base para la historia
+  - Longitud: 20-1000 caracteres
+- image: imagen , formatos validos: PG, PNG, WEBP tamaño: menor a 10 MB
+
+ 
+
+---
+
+## 🏗️ Arquitectura Técnica
+
+### Stack Tecnológico
+
+**Backend:**
+- Node.js/Express (código base existente)
+- PostgreSQL + pgvector extension
+- Prisma ORM
+- Jest/Mocha (TDD)
+- Deployment: Render
+
+**Frontend:**
+- Core: React (v18+), Vite
+- Estilos: Tailwind CSS
+- Componentes UI: Radix UI
+- Iconos: Lucide React
+- Formularios: React Hook Form
+- Gráficos: Recharts
+- Notificaciones: Sonner
+- Temas: Next Themes
+- Deployment: Vercel
+
+**IA:**
+- Cohere API (https://dashboard.cohere.com/playground/chat)
+- API Key configurada en .env → COHERE_API_KEY
+
+### Variables de Entorno (.env)
+
+```env
+# ============================================
+# SERVER CONFIGURATION
+# ============================================
+PORT=8000
+
+# ============================================
+# DATABASE CONFIGURATION
+# ============================================
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/autostory_db?schema=public"
+
+# ============================================
+# API KEYS
+# ============================================
+COHERE_API_KEY="***************************"
+
+# ============================================
+# CORS - FRONTEND URLS
+# ============================================
+FRONTEND_URL_LOCAL="http://localhost:5173"
+FRONTEND_URL="https://tu-frontend.vercel.app"
+
+# ============================================
+# ENVIRONMENT
+# ============================================
+NODE_ENV="development"
+
+# ============================================
+# PUERTOS - GUÍA RÁPIDA
+# ============================================
+# Backend API:     http://localhost:8000
+# PostgreSQL:      localhost:5432
+# Frontend (Vite): http://localhost:5173
+# ============================================
+```
+
+### Validaciones y Reglas
+
+**Campos requeridos:** `tone`, `format`, `text`
+
+**Dominios válidos:**
+- `tone`: "INSPIRACIONAL", "EDUCATIVO", "TÉCNICO"
+- `format`: "HISTORIA", "POST", "REDES_SOCIALES", "OTRO"
+- `text`: 20-1000 caracteres
+
+**Mensajes de error:**
+- Tono inválido: `"Valor de tone no válido: [valor recibido]. Valores permitidos: INSPIRACIONAL, EDUCATIVO, TÉCNICO"`
+- Formato inválido: `"Valor de format no válido: [valor recibido]. Valores permitidos: HISTORIA, POST, REDES_SOCIALES, OTRO"`
+- Texto inválido: `"El texto debe tener entre 20 y 1000 caracteres. Recibido: [longitud]"`
+
+**Validación de output:**
+- Longitud: 80-120 palabras
+- Estructura: Gancho → Desarrollo → Cierre inspirador
+- Incluir llamado a la acción (para formatos de redes sociales)
+
+---
+
+## 🔧 Implementación Paso a Paso
+
+pasos que correspondan
+adecuara codigo actaul de endpoint  /api/generate-story
+para que reciba imagen, 
+volver la imagen medinate modelo IA (mejor si cohere) en cpations descripciones textuales de la image
+ajustar prompot para que se incluya esa informacion de maneraa parametrica
+
+
+## ✅ Criterios de Validación (DoD)
+
+- [ ] Tests unitarios pasan al 100%
+- [ ] Endpoint responde correctamente con 4 variables
+- [ ] Historias generadas cumplen 80-120 palabras
+- [ ] Manejo de errores implementado con mensajes claros
+- [ ] Documentación API actualizada
+- [ ] Código conectado al backend/frontend existente
+- [ ] Variables de entorno configuradas
+- [ ] Schema Prisma definido para futura persistencia
+- [ ] Validaciones de input funcionando correctamente
+- [ ] Validaciones de output implementadas
+- [ ] archivo json para importar en postman para que se pruebe facilemtne la funcionalidad de imagen
+- [ ] los test debera ub icarse en directorio backend/test/img
+- [ ] la doumetnacion de esta fase se ubicara en directorio backend/doc/img
+- [ ] ajustara actual  archivo readme.md con nuevas consideraciones de etapa 1
+
+
+## 🚀 Siguiente Fase (Preparación)
+
+Una vez validada Fase 0, preparar para:
+- usar mediante prisma bd postgres para almacenar la info de las 4 variables
+
+## 📚 Recursos y Referencias
+
+- [Cohere API Docs](https://docs.cohere.com/)
+- [Prisma + PostgreSQL](https://www.prisma.io/docs/concepts/components/prisma-client/databases/postgresql)
+- [pgvector Extension](https://github.com/pgvector/pgvector)
+- Código base etapa 1: `C:\nocountry\3\` + C:\nocountry\3\plan
+- Estructura de BD propuesta: `C:\nocountry\3\plan\db_struct.sql`
+- Descripción general del proyecto: `C:\nocountry\3\plan\desc_gral_proy_auto_store-builder.txt`
+
+
+
+## 🐛 Debugging & Testing
+
+### Testing Local
+
+```bash
+# 1. Instalar dependencias
+npm install
+
+# 2. Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus credenciales
+
+# 3. Ejecutar tests
+npm test
+
+# 4. Iniciar servidor de desarrollo
+npm run dev
+
+# 5. Probar endpoint
+curl -X POST http://localhost:8000/api/generate-story \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tone": "INSPIRACIONAL",
+    "format": "REDES_SOCIALES",
+    "text": "Joven de comunidad rural accedió a programa de becas tecnológicas. Superó barreras de conectividad y hoy trabaja como desarrollador remoto, ayudando a su familia."
+  }'
+```
+
+### Validación Manual
+
+1. Verificar que el story cumple 80-120 palabras
+2. Confirmar que refleja el tono solicitado
+3. Validar estructura: gancho → desarrollo → cierre
+4. Comprobar llamado a la acción presente (para REDES_SOCIALES)
+5. Verificar que el formato es apropiado
+
+---
+
+## 📝 Notas de Implementación
+
+- **TDD First:** Escribir tests antes del código
+- **Código Base:** Usar el código funcional existente como base
+- **Modularidad:** Mantener la función modular para fácil integración de imagen en fases posteriores
+- **Documentación:** Documentar decisiones técnicas importantes
+- **Commits:** Realizar commits atómicos por funcionalidad
+- **Consistencia:** Usar nombres de variables en inglés en el código, español en la documentación
+
+---
+
+## 🔄 Evolución del Contrato API
+
+### Fase 1 (Actual)
+- Input: `tone`, `format`, `text`, 'image'
+- Output: `success`, `generatedStory`, `validation`, `metadata`
+
+### Fase 2 (Futura)
+- Input adicional: `idUser`, `operacion` ("GENERAR" | "REGENERAR" | "EDITAR"), `image` 
+- Output adicional: `id_story` (UUID), persistencia en BD
+
+### Fase 3+ (Futura)
+- RAG: Búsqueda semántica de historias similares
+- Análisis de imagen con IA
+- Panel de edición interactivo
+- Exportación en múltiples formatos
+

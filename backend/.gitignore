@@ -1,28 +1,23 @@
 # Dependencies
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+package-lock.json
 
-# Build
+# Environment variables
+.env*
+!.env.example
+
+
+# Build output
 dist/
 build/
-*.tsbuildinfo
-
-# Environment
-.env
-.env.local
-.env.*.local
 
 # Logs
 logs/
 *.log
-combined.log
-error.log
+npm-debug.log*
 
-# Coverage
+# Testing
 coverage/
-*.lcov
 .nyc_output/
 
 # IDE
@@ -31,17 +26,14 @@ coverage/
 *.swp
 *.swo
 *~
-.DS_Store
-
-# Test
-test-results/
-*.spec.ts.snap
-
-# Temporary
-tmp/
-temp/
-*.tmp
 
 # OS
-Thumbs.db
 .DS_Store
+Thumbs.db
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Prisma
+prisma/migrations/

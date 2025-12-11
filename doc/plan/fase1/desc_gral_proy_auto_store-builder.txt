@@ -1,0 +1,30 @@
+👩‍🚀 AutoStory Builder
+Sector de Negocios
+
+Cross-industry
+
+Necesidad del Cliente
+
+Implementar una IA que, a partir de imágenes, testimonios y capturas de pantalla del usuario, cree automáticamente historias visuales listas para redes y comunicación institucional.
+
+Objetivo
+
+Desarrollar un agente de inteligencia artificial capaz de generar historias visuales y textuales a partir de inputs multimedia (imágenes, videos, testimonios o texto). El sistema debe producir contenido narrativo en múltiples formatos (post social, resumen de caso, storytelling de impacto).
+
+Requerimientos funcionales
+
+Carga de archivos multimedia y texto como input.
+Procesamiento del contenido con IA generativa (texto + imagen).
+Creación automática de una narrativa coherente y con tono configurable (inspiracional, educativo, técnico).
+Posibilidad de exportar el resultado en formato Imagen, PDF o publicación web.
+Panel para revisar, editar y versionar las historias generadas.
+Requerimientos técnicos
+
+Integración con API de LLM a eleccion.
+Posibilidad de usar CLIP o modelo multimodal para análisis de imagen.
+Front minimalista.
+Entregables esperados
+
+Prototipo funcional del generador.
+Tres historias generadas con distintos tonos narrativos.
+Documentación de endpoints y flujo de uso.

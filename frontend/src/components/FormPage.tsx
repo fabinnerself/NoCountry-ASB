@@ -59,6 +59,8 @@ export function FormPage() {
   };
 
   const handleGenerate = async () => {
+    //let urlBE ="http://localhost:8000/api/generate-story"
+    let urlBE ="https://nocountry-asb.onrender.com/api/generate-story"
     setValidationError(null);
 
     // Validate text content
@@ -85,8 +87,7 @@ export function FormPage() {
       console.log('Enviando solicitud a la API con imagen:', files.length > 0 ? 'Sí' : 'No');
 
       // Make API call
-      //const response = await fetch('http://localhost:8000/api/generate-story', {
-      const response = await fetch('https://nocountry-asb.onrender.com/api/generate-story', {
+      const response = await fetch(urlBE, {
         method: 'POST',
         // Don't set Content-Type header - browser will set it automatically with boundary
         body: formData
@@ -104,7 +105,7 @@ export function FormPage() {
       console.log('Datos recibidos de la API:', data);
 
       // Set the generated story content
-      setGeneratedContent(data.generatedStory);
+      setGeneratedContent(data.story);
     } catch (error) {
       console.error('Error al generar la historia:', error);
       setGeneratedContent(`Error al generar la historia: ${error instanceof Error ? error.message : 'Error desconocido'}`);

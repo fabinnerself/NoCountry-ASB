@@ -1,0 +1,261 @@
+1 antecendente codigo de front ent/back funcional y testeado de manera local y en linea: vercel ->frontEnd) y render-> backend
+2 fase 0 plan, taks en dir fase0 "C:\nocountry\4\doc\plan\fase0"
+3 fase 0 plan, taks en dir fase1 "C:\nocountry\4\doc\plan\fase1"
+3 no desarrollar de 0 sobre actual codigo implemntar con  tdd,  persistencia en bd , bd (C:\nocountry\4\doc\plan\fase2\db_struct.sql)
+sobre todo implementar que se grabe en tabla "stories" las 4 variables e informacion generada (solo texto generado y id_usuario contante , si hubiera mensaje el texto 
+    de error, created_at o updated_at segun corresponda )
+    1ra sub fase bd postgres local en .env las credenciaels (DATABASE_URL) luego se realizaran las pruebas en neontech onnlie bd postgres (2da subffase)...
+    dar las instrucciones en prisma para realizar creacion de db con estructura de db_struct.sql
+
+
+
+
+# Fase/Iteración 2: Desarrollo persistencia en bd
+## 🎯 Objetivo General - Iteración 2
+Desarrollar y validar la función de grabar las 4 variables e informacion (createdAT, user, etc asi como texto generado y version) despues de generar
+   el endpoint `/api/generate-story`, utilizando TDD y preparando la infraestructura para fases posteriores con PostgreSQL (9versionado) .
+
+## Objetivo Final (Full Project)
+Desarrollar AutoStory Builder completo según la definición en `desc_gral_proy_auto_store-builder.txt`: sistema de IA para generar historias visuales y textuales a partir de inputs multimedia, con panel de edición, exportación y RAG.
+
+## 📋 Alcance de Fase 1
+
+### Endpoint Principal: POST /api/generate-story
+
+**Input JSON:**
+```json
+{
+  "tone": "INSPIRACIONAL" | "EDUCATIVO" | "TÉCNICO",
+  "format": "HISTORIA" | "POST" | "REDES_SOCIALES" | "OTRO",
+  "text": "string (min 20, max 1000 chars)",
+  "image": JPG, PNG, WEBP, testimonios < 10 MB
+}
+```
+
+**Output JSON:**
+```json
+{
+  "success": "ok",
+  "generatedStory": "string (historia generada)",
+  "validation": {
+    "tone": "ok" | "error",
+    "format": "ok" | "error",
+    "text": "ok" | "error",
+    "image":"ok"| "error",
+    "db":"ok"| "error"
+  },
+  "metadata": {
+    "wordCount": 95,
+    "tone": "INSPIRACIONAL",
+    "format": "REDES_SOCIALES",
+    "generatedAt": "2025-12-09T02:13:27.227Z",
+    "model": "command-r-plus"
+  }
+}
+```
+
+### Entrada (4 variables iniciales) misma estructura y validacion de anterior fase (fase1)
+- `tone`: String - Tono de la narrativa
+  - Valores válidos: "INSPIRACIONAL", "EDUCATIVO", "TÉCNICO"
+- `format`: String - Formato de salida
+  - Valores válidos: "HISTORIA", "POST", "REDES_SOCIALES", "OTRO"
+- `text`: String - Contexto/información base para la historia
+  - Longitud: 20-1000 caracteres
+- image: imagen , formatos validos: PG, PNG, WEBP tamaño: menor a 10 MB
+
+
+ 
+
+---
+
+## 🏗️ Arquitectura Técnica
+
+### Stack Tecnológico
+
+**Backend:**
+- Node.js/Express (código base existente)
+- PostgreSQL + pgvector extension
+- Prisma ORM
+- Jest/Mocha (TDD)
+- Deployment: Render
+
+**Frontend:**
+- Core: React (v18+), Vite
+- Estilos: Tailwind CSS
+- Componentes UI: Radix UI
+- Iconos: Lucide React
+- Formularios: React Hook Form
+- Gráficos: Recharts
+- Notificaciones: Sonner
+- Temas: Next Themes
+- Deployment: Vercel
+
+**IA:**
+- Cohere API (https://dashboard.cohere.com/playground/chat)
+- API Key configurada en .env → COHERE_API_KEY
+
+### Variables de Entorno (.env)
+
+```env
+# ============================================
+# SERVER CONFIGURATION
+# ============================================
+PORT=8000
+
+# ============================================
+# DATABASE CONFIGURATION
+# ============================================
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/autostory_db?schema=public"
+
+# ============================================
+# API KEYS
+# ============================================
+COHERE_API_KEY="***************************"
+
+# ============================================
+# CORS - FRONTEND URLS
+# ============================================
+FRONTEND_URL_LOCAL="http://localhost:5173"
+FRONTEND_URL="https://tu-frontend.vercel.app"
+
+# ============================================
+# ENVIRONMENT
+# ============================================
+NODE_ENV="development"
+
+# ============================================
+# PUERTOS - GUÍA RÁPIDA
+# ============================================
+# Backend API:     http://localhost:8000
+# PostgreSQL:      localhost:5432
+# Frontend (Vite): http://localhost:5173
+# ============================================
+```
+
+### Validaciones y Reglas
+
+**Campos requeridos:** `tone`, `format`, `text`
+
+**Dominios válidos:**
+- `tone`: "INSPIRACIONAL", "EDUCATIVO", "TÉCNICO"
+- `format`: "HISTORIA", "POST", "REDES_SOCIALES", "OTRO"
+- `text`: 20-1000 caracteres
+
+**Mensajes de error:** mismos de anterior fase1 
+- Tono inválido: `"Valor de tone no válido: [valor recibido]. Valores permitidos: INSPIRACIONAL, EDUCATIVO, TÉCNICO"`
+- Formato inválido: `"Valor de format no válido: [valor recibido]. Valores permitidos: HISTORIA, POST, REDES_SOCIALES, OTRO"`
+- Texto inválido: `"El texto debe tener entre 20 y 1000 caracteres. Recibido: [longitud]"`
+- Error en BD: "ocurrio error al operar con bd..."
+
+**Validación de output:**
+- Longitud: 80-120 palabras
+- Estructura: Gancho → Desarrollo → Cierre inspirador
+- Incluir llamado a la acción (para formatos de redes sociales)
+
+---
+
+## 🔧 Implementación Paso a Paso
+
+pasos que correspondan
+adecuara codigo actaul de endpoint  /api/generate-story
+para que grabe las 4 variables, texto generado y otras que corresponda a la estructura de bd (created at, user, etc), 
+
+
+## ✅ Criterios de Validación (DoD)
+
+- [ ] Tests unitarios pasan al 100% (diferenciado dstinguoddo de los anteriores tests de anteriores fases ej. npn run test:db o algo similar)
+- [ ] Endpoint aparte responde correctamente con 4 variables graba la informacion en bd 
+- [ ] Manejo de errores implementado con mensajes claros
+- [ ] Documentación API actualizada
+- [ ] Código conectado al backend/frontend existente
+- [ ] Variables de entorno configuradas
+- [ ] Schema Prisma definido y funcional probado para que la estructura de bd sea funcional
+- [ ] Validaciones de input funcionando correctamente ademas de que cuando se graba en bd mantiene su funcionalidad
+- [ ] Validaciones de output implementadas 
+- [ ] archivo json para importar en postman para que se pruebe facilemtne la funcionalidad de imagen (ubicado en dir ./doc/db/)
+- [ ] los test debera ub icarse en directorio backend/test/db
+- [ ] la doumetnacion de esta fase se ubicara en directorio backend/doc/db
+- [ ] ajustara actual  archivo .backend/readme.md con nuevas consideraciones de fase 2 (mantener la info de anteriores fases)
+
+
+## 🚀 Siguiente Fase (Preparación)
+
+Una vez validada Fase 2, preparar para:
+- grabar versionado de generacion de historias 
+
+## 📚 Recursos y Referencias
+
+- [Cohere API Docs](https://docs.cohere.com/)
+- [Prisma + PostgreSQL](https://www.prisma.io/docs/concepts/components/prisma-client/databases/postgresql)
+- [pgvector Extension](https://github.com/pgvector/pgvector)
+- Código base etapa 1: `C:\nocountry\3\` + C:\nocountry\3\plan
+- Estructura de BD propuesta: `C:\nocountry\3\plan\db_struct.sql`
+- Descripción general del proyecto: `C:\nocountry\3\plan\desc_gral_proy_auto_store-builder.txt`
+
+
+
+## 🐛 Debugging & Testing
+
+### Testing Local
+
+```bash
+# 1. Instalar dependencias
+npm install
+
+# 2. Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus credenciales
+
+# 3. Ejecutar tests
+npm test
+
+# 4. Iniciar servidor de desarrollo
+npm run dev
+
+# 5. Probar endpoint
+curl -X POST http://localhost:8000/api/generate-story \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tone": "INSPIRACIONAL",
+    "format": "REDES_SOCIALES",
+    "text": "Joven de comunidad rural accedió a programa de becas tecnológicas. Superó barreras de conectividad y hoy trabaja como desarrollador remoto, ayudando a su familia."
+  }'
+```
+
+### Validación Manual
+
+1. Verificar que el  resultado del procesamiento se graba en tabla "stories" de bd 
+2. Confirmar que se realizo la operacion de grabado de bd 
+3. Verificar que el formato es apropiado
+
+---
+
+## 📝 Notas de Implementación
+
+- **TDD First:** Escribir tests antes del código
+- **Código Base:** Usar el código funcional existente como base (C:\nocountry\4 ) adecuar codigo existente de backend , y mantener sin modificacion codigo de frontened
+- **Modularidad:** Mantener la función modular para fácil integración de bd en fases posteriores
+- **Documentación:** Documentar decisiones técnicas importantes
+- **Commits:** Realizar commits atómicos por funcionalidad
+- **Consistencia:** Usar nombres de variables en inglés en el código, español en la documentación
+- **Publicacion**: considerar y segun corresponda modificar la actual configuracion de dockerfile /render.yaml / ./backend/docker-compose.yml
+    ./backend/Dockerfile 
+
+---
+
+## 🔄 Evolución del Contrato API
+
+### Fase 1 (Actual)
+- Input: `tone`, `format`, `text`, 'image'
+- Output: `success`, `generatedStory`, `validation`, `metadata`
+
+### Fase 2 (Futura)
+- Input adicional: `idUser`, `operacion` ("GENERAR" | "REGENERAR" | "EDITAR"), `image` 
+- Output adicional: `id_story` (UUID), persistencia en BD
+
+### Fase 3+ (Futura)
+- RAG: Búsqueda semántica de historias similares
+- Análisis de imagen con IA
+- Panel de edición interactivo
+- Exportación en múltiples formatos
+

@@ -1,14 +1,59 @@
-node_modules
-npm-debug.log
-dist
-coverage
-.git
-.gitignore
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+dist/
+build/
+
+# Environment files
 .env
 .env.local
-.env.example
-README.md
-tests
-.vscode
-.idea
-*.md
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# Testing
+coverage/
+.nyc_output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation (opcional, comentar si quieres incluir)
+# doc/
+# *.md
+
+# Tests (opcional, comentar si quieres incluir)
+tests/
+*.test.ts
+*.spec.ts
+
+# Uploads (se crean en runtime)
+uploads/*
+!uploads/.gitkeep
+
+# Prisma
+prisma/migrations/
+.prisma/
+
+# Misc
+.dockerignore
+Dockerfile
+docker-compose.yml

@@ -1,0 +1,503 @@
+# Fase/Iteración 0: Desarrollo de Función Story Generator
+
+## 🎯 Objetivo General - Iteración 0
+Desarrollar y validar la función base de generación de historias que será llamada desde el endpoint `/api/generate-story`, utilizando TDD y preparando la infraestructura para fases posteriores con PostgreSQL .
+
+## Objetivo Final (Full Project)
+Desarrollar AutoStory Builder completo según la definición en `desc_gral_proy_auto_store-builder.txt`: sistema de IA para generar historias visuales y textuales a partir de inputs multimedia, con panel de edición, exportación y RAG.
+
+---
+
+## 📋 Alcance de Fase 0
+
+### Endpoint Principal: POST /api/generate-story
+
+**Input JSON:**
+```json
+{
+  "tone": "INSPIRACIONAL" | "EDUCATIVO" | "TÉCNICO",
+  "format": "HISTORIA" | "POST" | "REDES_SOCIALES" | "OTRO",
+  "text": "string (min 20, max 1000 chars)"
+}
+```
+
+**Ejemplo de Input:**
+```json
+{
+  "tone": "INSPIRACIONAL",
+  "format": "REDES_SOCIALES",
+  "text": "Joven de comunidad rural accedió a programa de becas tecnológicas. Superó barreras de conectividad y hoy trabaja como desarrollador remoto, ayudando a su familia."
+}
+```
+
+**Output JSON:**
+```json
+{
+  "success": "ok",
+  "generatedStory": "string (historia generada)",
+  "validation": {
+    "tone": "ok" | "error",
+    "format": "ok" | "error",
+    "text": "ok" | "error"    
+  },
+  "metadata": {
+    "wordCount": 95,
+    "tone": "INSPIRACIONAL",
+    "format": "REDES_SOCIALES",
+    "generatedAt": "2025-12-09T02:13:27.227Z",
+    "model": "command-r-plus"
+  }
+}
+```
+
+**Ejemplo de Output:**
+```json
+{
+  "success": "ok",
+  "generatedStory": "🌟 De las montañas al código: la historia de superación de Juan\n\nSin internet estable, con solo su determinación y un celular prestado, Juan aprendió a programar. Hoy, desde su pueblo, trabaja para empresas internacionales y está cambiando el futuro de su familia.\n\n¿Cuál es tu historia de superación? 💪\n\n#Inspiración #Tecnología #Superación",
+  "validation": {
+    "tone": "ok",
+    "format": "ok",
+    "wordCount": "ok"
+  },
+  "metadata": {
+    "wordCount": 95,
+    "tone": "INSPIRACIONAL",
+    "format": "REDES_SOCIALES",
+    "generatedAt": "2025-12-09T02:13:27.227Z",
+    "model": "command-r-plus"
+  }
+}
+```
+
+### Entrada (3 variables iniciales)
+- `tone`: String - Tono de la narrativa
+  - Valores válidos: "INSPIRACIONAL", "EDUCATIVO", "TÉCNICO"
+- `format`: String - Formato de salida
+  - Valores válidos: "HISTORIA", "POST", "REDES_SOCIALES", "OTRO"
+- `text`: String - Contexto/información base para la historia
+  - Longitud: 20-1000 caracteres
+
+**Nota:** La imagen con captions se integrará en fases posteriores (Fase 1 o siguiente).
+
+---
+
+## 🏗️ Arquitectura Técnica
+
+### Stack Tecnológico
+
+**Backend:**
+- Node.js/Express (código base existente)
+- PostgreSQL + pgvector extension
+- Prisma ORM
+- Jest/Mocha (TDD)
+- Deployment: Render
+
+**Frontend:**
+- Core: React (v18+), Vite
+- Estilos: Tailwind CSS
+- Componentes UI: Radix UI
+- Iconos: Lucide React
+- Formularios: React Hook Form
+- Gráficos: Recharts
+- Notificaciones: Sonner
+- Temas: Next Themes
+- Deployment: Vercel
+
+**IA:**
+- Cohere API (https://dashboard.cohere.com/playground/chat)
+- API Key configurada en .env → COHERE_API_KEY
+
+### Variables de Entorno (.env)
+
+```env
+# ============================================
+# SERVER CONFIGURATION
+# ============================================
+PORT=8000
+
+# ============================================
+# DATABASE CONFIGURATION
+# ============================================
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/autostory_db?schema=public"
+
+# ============================================
+# API KEYS
+# ============================================
+COHERE_API_KEY="***************************"
+
+# ============================================
+# CORS - FRONTEND URLS
+# ============================================
+FRONTEND_URL_LOCAL="http://localhost:5173"
+FRONTEND_URL="https://tu-frontend.vercel.app"
+
+# ============================================
+# ENVIRONMENT
+# ============================================
+NODE_ENV="development"
+
+# ============================================
+# PUERTOS - GUÍA RÁPIDA
+# ============================================
+# Backend API:     http://localhost:8000
+# PostgreSQL:      localhost:5432
+# Frontend (Vite): http://localhost:5173
+# ============================================
+```
+
+### Validaciones y Reglas
+
+**Campos requeridos:** `tone`, `format`, `text`
+
+**Dominios válidos:**
+- `tone`: "INSPIRACIONAL", "EDUCATIVO", "TÉCNICO"
+- `format`: "HISTORIA", "POST", "REDES_SOCIALES", "OTRO"
+- `text`: 20-1000 caracteres
+
+**Mensajes de error:**
+- Tono inválido: `"Valor de tone no válido: [valor recibido]. Valores permitidos: INSPIRACIONAL, EDUCATIVO, TÉCNICO"`
+- Formato inválido: `"Valor de format no válido: [valor recibido]. Valores permitidos: HISTORIA, POST, REDES_SOCIALES, OTRO"`
+- Texto inválido: `"El texto debe tener entre 20 y 1000 caracteres. Recibido: [longitud]"`
+
+**Validación de output:**
+- Longitud: 80-120 palabras
+- Estructura: Gancho → Desarrollo → Cierre inspirador
+- Incluir llamado a la acción (para formatos de redes sociales)
+
+---
+
+## 🔧 Implementación Paso a Paso
+
+### 1. Preparación del Entorno
+- [ ] Configurar API Key de Cohere en `.env`
+- [ ] Instalar dependencias: `cohere-ai`, `dotenv`
+- [ ] Revisar código base funcional de etapa 0
+
+### 2. Desarrollo del Prompt Template
+
+```javascript
+const STORY_PROMPT_TEMPLATE = `
+Eres un experto en storytelling que crea narrativas impactantes para organizaciones sociales.
+
+TONO SOLICITADO: {tone}
+{toneGuidelines}
+
+FORMATO SOLICITADO: {format}
+{formatGuidelines}
+
+CONTEXTO/INFORMACIÓN BASE:
+{text}
+
+REGLAS GENERALES:
+- Extensión: 80-120 palabras
+- Estructura: Gancho → Desarrollo breve → Cierre inspirador
+- Lenguaje conversacional y cercano
+- Incluir llamado a la acción cuando sea apropiado
+
+Genera una historia siguiendo todas las especificaciones anteriores.
+`;
+
+const TONE_GUIDELINES = {
+  INSPIRACIONAL: `
+    - Usar lenguaje emotivo que conecte con sentimientos de esperanza y superación
+    - Palabras clave: superación, esperanza, cambio, impacto, comunidad
+    - Estructura narrativa: Situación desafiante → Esfuerzo y cambio → Transformación → Mensaje esperanzador
+  `,
+  EDUCATIVO: `
+    - Usar lenguaje claro y didáctico
+    - Incluir datos, hechos o aprendizajes concretos
+    - Estructura: Problema/pregunta → Explicación → Conclusión/aplicación
+  `,
+  TÉCNICO: `
+    - Usar terminología precisa y profesional
+    - Enfocarse en procesos, metodologías o soluciones
+    - Estructura: Contexto técnico → Implementación → Resultados/métricas
+  `
+};
+
+const FORMAT_GUIDELINES = {
+  HISTORIA: `
+    - Narrativa completa con inicio, desarrollo y cierre
+    - Enfoque en personajes y su transformación
+    - Estilo literario y descriptivo
+  `,
+  POST: `
+    - Formato de blog post o artículo breve
+    - Párrafos cortos y escaneables
+    - Incluir título implícito en el contenido
+  `,
+  REDES_SOCIALES: `
+    - Formato optimizado para redes sociales
+    - Usar emojis estratégicamente
+    - Incluir hashtags relevantes al final
+    - Llamado a la acción claro
+  `,
+  OTRO: `
+    - Formato flexible adaptado al contexto
+    - Mantener claridad y concisión
+  `
+};
+```
+
+### 3. Desarrollo de la Función Principal (TDD)
+
+#### Tests a Implementar
+
+```javascript
+// tests/storyGenerator.test.js
+describe('Story Generator', () => {
+  test('debe generar historia con 3 variables válidas', async () => {
+    const input = {
+      tone: 'INSPIRACIONAL',
+      format: 'REDES_SOCIALES',
+      text: 'Joven de comunidad rural accedió a programa de becas tecnológicas.'
+    };
+    const result = await generateStory(input);
+    expect(result.success).toBe(true);
+    expect(result.generatedStory).toBeDefined();
+  });
+
+  test('debe validar longitud entre 80-120 palabras', async () => {
+    const result = await generateStory(validInput);
+    const wordCount = result.generatedStory.split(/\s+/).length;
+    expect(wordCount).toBeGreaterThanOrEqual(80);
+    expect(wordCount).toBeLessThanOrEqual(120);
+  });
+
+  test('debe rechazar tone inválido', async () => {
+    const input = { tone: 'INVALIDO', format: 'POST', text: 'Texto válido de prueba' };
+    await expect(generateStory(input)).rejects.toThrow('Valor de tone no válido');
+  });
+
+  test('debe rechazar format inválido', async () => {
+    const input = { tone: 'EDUCATIVO', format: 'INVALIDO', text: 'Texto válido de prueba' };
+    await expect(generateStory(input)).rejects.toThrow('Valor de format no válido');
+  });
+
+  test('debe rechazar texto muy corto', async () => {
+    const input = { tone: 'TÉCNICO', format: 'HISTORIA', text: 'Corto' };
+    await expect(generateStory(input)).rejects.toThrow('debe tener entre 20 y 1000 caracteres');
+  });
+
+  test('debe manejar errores de API Cohere', async () => {
+    // Mock API error
+    jest.spyOn(cohere, 'chat').mockRejectedValue(new Error('API Error'));
+    await expect(generateStory(validInput)).rejects.toThrow();
+  });
+
+  test('debe aplicar correctamente el tono solicitado', async () => {
+    const result = await generateStory({ tone: 'INSPIRACIONAL', format: 'POST', text: validText });
+    expect(result.metadata.tone).toBe('INSPIRACIONAL');
+  });
+});
+```
+
+#### Estructura de la Función
+
+```javascript
+// services/storyGenerator.js
+const { CohereClient } = require('cohere-ai');
+
+const VALID_TONES = ['INSPIRACIONAL', 'EDUCATIVO', 'TÉCNICO'];
+const VALID_FORMATS = ['HISTORIA', 'POST', 'REDES_SOCIALES', 'OTRO'];
+
+async function generateStory({ tone, format, text }) {
+  // 1. Validación de inputs
+  validateInputs({ tone, format, text });
+
+  // 2. Construcción del prompt parametrizado
+  const prompt = buildPrompt({ tone, format, text });
+
+  // 3. Llamada a Cohere API
+  const cohere = new CohereClient({
+    token: process.env.COHERE_API_KEY,
+  });
+
+  const response = await cohere.chat({
+    message: prompt,
+    model: "command-r-plus",
+    temperature: 0.7
+  });
+
+  const generatedStory = response.text;
+
+  // 4. Validación de output
+  const validation = validateOutput(generatedStory);
+
+  // 5. Retorno de resultado estructurado
+  return {
+    success: true,
+    generatedStory,
+    validation,
+    metadata: {
+      wordCount: generatedStory.split(/\s+/).length,
+      tone,
+      format,
+      generatedAt: new Date().toISOString(),
+      model: "command-r-plus"
+    }
+  };
+}
+
+function validateInputs({ tone, format, text }) {
+  if (!VALID_TONES.includes(tone)) {
+    throw new Error(`Valor de tone no válido: ${tone}. Valores permitidos: ${VALID_TONES.join(', ')}`);
+  }
+  if (!VALID_FORMATS.includes(format)) {
+    throw new Error(`Valor de format no válido: ${format}. Valores permitidos: ${VALID_FORMATS.join(', ')}`);
+  }
+  if (!text || text.length < 20 || text.length > 1000) {
+    throw new Error(`El texto debe tener entre 20 y 1000 caracteres. Recibido: ${text?.length || 0}`);
+  }
+}
+
+function buildPrompt({ tone, format, text }) {
+  return STORY_PROMPT_TEMPLATE
+    .replace('{tone}', tone)
+    .replace('{toneGuidelines}', TONE_GUIDELINES[tone])
+    .replace('{format}', format)
+    .replace('{formatGuidelines}', FORMAT_GUIDELINES[format])
+    .replace('{text}', text);
+}
+
+function validateOutput(story) {
+  const wordCount = story.split(/\s+/).length;
+  return {
+    tone: 'ok',
+    format: 'ok',
+    wordCount: (wordCount >= 80 && wordCount <= 120) ? 'ok' : 'error'
+  };
+}
+
+module.exports = { generateStory };
+```
+
+### 4. Endpoint REST API
+
+```javascript
+// routes/story.routes.js
+const express = require('express');
+const { generateStory } = require('../services/storyGenerator');
+const router = express.Router();
+
+router.post('/generate-story', async (req, res) => {
+  try {
+    const { tone, format, text } = req.body;
+    const result = await generateStory({ tone, format, text });
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+module.exports = router;
+```
+
+---
+
+## ✅ Criterios de Validación (DoD)
+
+- [ ] Tests unitarios pasan al 100%
+- [ ] Endpoint responde correctamente con 3 variables
+- [ ] Historias generadas cumplen 80-120 palabras
+- [ ] Manejo de errores implementado con mensajes claros
+- [ ] Documentación API actualizada
+- [ ] Código conectado al backend/frontend existente
+- [ ] Variables de entorno configuradas
+- [ ] Schema Prisma definido para futura persistencia
+- [ ] Validaciones de input funcionando correctamente
+- [ ] Validaciones de output implementadas
+
+---
+
+## 🚀 Siguiente Fase (Preparación)
+
+Una vez validada Fase 0, preparar para:
+- Integración de imagen + captions (4ta variable)
+- Análisis de imagen con IA
+- Extracción de embeddings con pgvector
+- Sistema de búsqueda semántica (RAG)
+- Persistencia de historias en PostgreSQL
+- Sistema de usuarios y autenticación
+
+---
+
+## 📚 Recursos y Referencias
+
+- [Cohere API Docs](https://docs.cohere.com/)
+- [Prisma + PostgreSQL](https://www.prisma.io/docs/concepts/components/prisma-client/databases/postgresql)
+- [pgvector Extension](https://github.com/pgvector/pgvector)
+- Código base etapa 0: `proy1/`
+- Estructura de BD propuesta: `db_struct.sql`
+- Descripción general del proyecto: `desc_gral_proy_auto_store-builder.txt`
+
+---
+
+## 🐛 Debugging & Testing
+
+### Testing Local
+
+```bash
+# 1. Instalar dependencias
+npm install
+
+# 2. Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus credenciales
+
+# 3. Ejecutar tests
+npm test
+
+# 4. Iniciar servidor de desarrollo
+npm run dev
+
+# 5. Probar endpoint
+curl -X POST http://localhost:8000/api/generate-story \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tone": "INSPIRACIONAL",
+    "format": "REDES_SOCIALES",
+    "text": "Joven de comunidad rural accedió a programa de becas tecnológicas. Superó barreras de conectividad y hoy trabaja como desarrollador remoto, ayudando a su familia."
+  }'
+```
+
+### Validación Manual
+
+1. Verificar que el story cumple 80-120 palabras
+2. Confirmar que refleja el tono solicitado
+3. Validar estructura: gancho → desarrollo → cierre
+4. Comprobar llamado a la acción presente (para REDES_SOCIALES)
+5. Verificar que el formato es apropiado
+
+---
+
+## 📝 Notas de Implementación
+
+- **TDD First:** Escribir tests antes del código
+- **Código Base:** Usar el código funcional existente como base
+- **Modularidad:** Mantener la función modular para fácil integración de imagen en fases posteriores
+- **Documentación:** Documentar decisiones técnicas importantes
+- **Commits:** Realizar commits atómicos por funcionalidad
+- **Consistencia:** Usar nombres de variables en inglés en el código, español en la documentación
+
+---
+
+## 🔄 Evolución del Contrato API
+
+### Fase 0 (Actual)
+- Input: `tone`, `format`, `text`
+- Output: `success`, `generatedStory`, `validation`, `metadata`
+
+### Fase 1 (Futura)
+- Input adicional: `idUser`, `operacion` ("GENERAR" | "REGENERAR" | "EDITAR"), `image` (opcional)
+- Output adicional: `id_story` (UUID), persistencia en BD
+
+### Fase 2+ (Futura)
+- RAG: Búsqueda semántica de historias similares
+- Análisis de imagen con IA
+- Panel de edición interactivo
+- Exportación en múltiples formatos

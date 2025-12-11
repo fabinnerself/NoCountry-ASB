@@ -1,307 +1,309 @@
-# AutoStory Builder - Phase 1
+# AutoStory Builder - Backend API (Fase 2)
 
-> AI-powered story generation with image processing
+Backend API para AutoStory Builder con persistencia en PostgreSQL usando Prisma ORM.
 
-## 🎯 Overview
+## 🚀 Características
 
-AutoStory Builder transforms images and text into compelling narratives using AI. Phase 1 introduces **image processing** capabilities, extracting visual context to enrich story generation.
+- ✅ Generación de historias con IA (Cohere API)
+- ✅ Persistencia en PostgreSQL con Prisma ORM
+- ✅ Soporte para imágenes (upload con Multer)
+- ✅ Degradación elegante ante fallos de BD
+- ✅ Health check con estado de base de datos
+- ✅ Logging estructurado con Winston
+- ✅ TypeScript con tipos estrictos
+- ✅ Testing con Jest
 
-### Key Features
+## 📋 Requisitos
 
-- ✅ **Image Analysis:** Extract visual captions using Cohere Vision AI
-- ✅ **Multi-tone Support:** INSPIRACIONAL, EDUCATIVO, TÉCNICO
-- ✅ **Multi-format Output:** HISTORIA, POST, REDES_SOCIALES, OTRO
-- ✅ **Smart Validation:** 80-120 words, structure, tone matching, CTA
-- ✅ **Robust Error Handling:** Retries, timeouts, detailed error messages
-- ✅ **Full Test Coverage:** 80%+ with unit, integration, and E2E tests
+- Node.js 18+
+- PostgreSQL 15+ (local o NeonTech)
+- npm o yarn
 
----
+## 🛠️ Instalación
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Node.js ≥18.0.0
-- npm ≥9.0.0
-- Cohere API Key ([Get one here](https://cohere.com))
-
-### Installation
+### 1. Clonar e instalar dependencias
 
 ```bash
-# Clone repository
-git clone https://github.com/fabinnerself/NoCountry-ASB.git
-cd NoCountry-ASB/0code
-
-# Install dependencies
+cd backend
 npm install
+```
 
-# Setup environment
+### 2. Configurar variables de entorno
+
+```bash
 cp .env.example .env
-# Edit .env and add your COHERE_API_KEY
 ```
 
-### Run Development Server
+Editar `.env` con tus credenciales:
+
+```env
+NODE_ENV=development
+PORT=8000
+COHERE_API_KEY=tu_api_key_de_cohere
+FRONTEND_URL=http://localhost:3000
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/autostory?schema=public
+```
+
+### 3. Configurar base de datos
 
 ```bash
+# Generar cliente Prisma
+npm run prisma:generate
+
+# Crear migración inicial
+npm run prisma:migrate
+
+# Verificar con Prisma Studio (opcional)
+npm run prisma:studio
+```
+
+### 4. Iniciar servidor
+
+```bash
+# Desarrollo (con hot reload)
 npm run dev
+
+# Producción
+npm run build
+npm start
 ```
 
-Server will start on `http://localhost:8000`
+## 📡 Endpoints
 
----
-
-## 📋 API Usage
-
-### Generate Story with Image
+### Health Check
 
 ```bash
-curl -X POST http://localhost:8000/api/generate-story \
-  -F "tone=INSPIRACIONAL" \
-  -F "format=REDES_SOCIALES" \
-  -F "text=Joven emprendedora superó obstáculos para crear su empresa" \
-  -F "image=@path/to/image.jpg"
+GET /health
 ```
 
-### Response
-
+Respuesta:
 ```json
 {
-  "success": "ok",
-  "generatedStory": "En una comunidad rural, María transformó su pasión...",
-  "validation": {
-    "tone": "ok",
-    "format": "ok",
-    "text": "ok",
-    "image": "ok"
-  },
-  "metadata": {
-    "wordCount": 95,
-    "tone": "INSPIRACIONAL",
-    "format": "REDES_SOCIALES",
-    "imageProcessed": true,
-    "imageCaptions": ["Emprendedora con laptop", "Espacio creativo"],
-    "generatedAt": "2025-12-09T14:30:22.000Z",
-    "model": "command-r-plus",
-    "processingTimeMs": 3847
+  "status": "ok",
+  "version": "fase2",
+  "timestamp": "2024-12-10T...",
+  "database": "connected",
+  "services": {
+    "api": "ok",
+    "cohere": "configured"
   }
 }
 ```
 
----
+### Generar Historia
+
+```bash
+POST /api/generate-story
+Content-Type: multipart/form-data
+
+{
+  "tone": "inspiracional",
+  "format": "redes sociales",
+  "text": "Un dragón en las montañas",
+  "image": [archivo opcional],
+  "id_usuario": "user123"
+}
+```
+
+Respuesta:
+```json
+{
+  "success": true,
+  "story": "Historia generada...",
+  "metadata": {
+    "tone": "inspiracional",
+    "format": "redes sociales",
+    "hasImage": false,
+    "processingTimeMs": 1234
+  },
+  "validation": {
+    "input": "ok",
+    "generation": "ok",
+    "db": "ok"
+  }
+}
+```
+
+## 🗄️ Base de Datos
+
+### Schema Prisma
+
+La tabla `stories` almacena:
+- `id` (UUID): Identificador único
+- `tone`: Tono de la historia
+- `format`: Formato de la historia
+- `text`: Texto de entrada del usuario
+- `image`: Referencia a imagen subida
+- `generatedStory`: Historia generada por IA
+- `idUsuario`: ID del usuario (opcional)
+- `createdAt`: Timestamp de creación
+- `updatedAt`: Timestamp de actualización
+- `version`: Versión de la fase
+- `errorMessage`: Mensaje de error si aplica
+
+### Comandos Prisma
+
+```bash
+# Generar cliente
+npm run prisma:generate
+
+# Crear migración
+npm run prisma:migrate
+
+# Aplicar en producción
+npm run prisma:deploy
+
+# Abrir GUI
+npm run prisma:studio
+
+# Validar schema
+npx prisma validate
+
+# Formatear schema
+npx prisma format
+```
 
 ## 🧪 Testing
 
-### Run All Tests
-
 ```bash
+# Todos los tests
 npm test
-```
 
-### Run with Coverage
+# Tests con watch mode
+npm run test:watch
 
-```bash
+# Tests con cobertura
 npm run test:coverage
+
+# Solo tests de BD
+npm run test:db
+
+# Tests E2E
+npm run test:e2e
 ```
 
-### Test Suites
+## 🚢 Deployment
 
-- **Unit Tests:** `npm run test:unit`
-- **Integration Tests:** `npm run test:integration`
-- **E2E Tests:** `npm run test:e2e`
+### Local con PostgreSQL
 
-**Target Coverage:** ≥80%
+1. Instalar PostgreSQL
+2. Crear base de datos: `createdb autostory`
+3. Configurar `DATABASE_URL` en `.env`
+4. Ejecutar migraciones: `npm run prisma:migrate`
+5. Iniciar servidor: `npm run dev`
 
----
+### Cloud con NeonTech
 
-## 📁 Project Structure
+1. Crear proyecto en [NeonTech](https://neon.tech)
+2. Copiar `DATABASE_URL` de NeonTech
+3. Configurar en `.env`
+4. Ejecutar: `npm run prisma:deploy`
+5. Verificar con: `npm run prisma:studio`
+
+### Producción en Render
+
+1. Configurar variables de entorno en Render Dashboard:
+   - `DATABASE_URL`
+   - `COHERE_API_KEY`
+   - `NODE_ENV=production`
+
+2. Build command:
+```bash
+npm install && npx prisma generate && npx prisma migrate deploy && npm run build
+```
+
+3. Start command:
+```bash
+npm start
+```
+
+## 📁 Estructura del Proyecto
 
 ```
-0code/
+backend/
+├── prisma/
+│   └── schema.prisma          # Schema de Prisma
 ├── src/
-│   ├── config/          # Environment, Cohere, CORS
-│   ├── constants/       # Validation rules, prompts, errors
-│   ├── controllers/     # Request handlers
-│   ├── middleware/      # Multer, validation, error handling
-│   ├── routes/          # API routes
-│   ├── schemas/         # Zod validation schemas
-│   ├── services/        # Business logic
-│   │   ├── imageAnalyzer.service.ts    # NEW
-│   │   ├── promptBuilder.service.ts    # UPDATED
-│   │   ├── storyGenerator.service.ts   # UPDATED
-│   │   └── outputValidator.service.ts  # UPDATED
-│   └── utils/           # Helpers, logger
-│
-├── tests/
-│   ├── fixtures/        # Test data, images
-│   └── img/
-│       ├── unit/        # Unit tests
-│       ├── integration/ # Integration tests
-│       └── e2e/         # E2E tests
-│
-├── doc/img/
-│   ├── 0_API_REFERENCE.md
-│   ├── 1_IMPLEMENTATION_GUIDE.md
-│   ├── 2_IMAGE_PROCESSING.md
-│   ├── 3_TESTING_STRATEGY.md
-│   └── postman_collection.json
-│
+│   ├── config/
+│   │   ├── database.ts        # Cliente Prisma singleton
+│   │   └── multer.ts          # Configuración de uploads
+│   ├── controllers/
+│   │   └── story.controller.ts
+│   ├── repositories/
+│   │   └── story.repository.ts
+│   ├── routes/
+│   │   ├── story.routes.ts
+│   │   └── health.routes.ts
+│   ├── services/
+│   │   └── storyGenerator.service.ts
+│   ├── types/
+│   │   └── story.dto.ts
+│   ├── utils/
+│   │   ├── logger.ts
+│   │   └── databaseErrorHandler.ts
+│   ├── app.ts
+│   └── index.ts
+├── tests/                     # Tests (a implementar)
+├── uploads/                   # Archivos subidos
+├── .env.example
+├── .gitignore
 ├── package.json
 ├── tsconfig.json
-├── jest.config.js
 └── README.md
 ```
 
----
+## 🔧 Configuración Avanzada
 
-## 🔧 Configuration
+### Variables de Entorno
 
-### Environment Variables
+| Variable | Descripción | Requerido |
+|----------|-------------|-----------|
+| `NODE_ENV` | Ambiente (development/production) | No |
+| `PORT` | Puerto del servidor | No (default: 8000) |
+| `COHERE_API_KEY` | API key de Cohere | Sí |
+| `FRONTEND_URL` | URL del frontend para CORS | No |
+| `DATABASE_URL` | URL de conexión PostgreSQL | Sí |
+| `DATABASE_TEST_URL` | URL de BD de prueba | No |
 
-```env
-PORT=8000
-NODE_ENV=development
-COHERE_API_KEY=your-api-key-here
-FRONTEND_URL_LOCAL=http://localhost:5173
-FRONTEND_URL=https://frontend.vercel.app
-LOG_LEVEL=info
-MAX_FILE_SIZE=10485760
-```
+### Logging
 
----
+El sistema usa Winston para logging estructurado:
+- **Development**: Logs detallados con queries SQL
+- **Production**: Solo errores y warnings
 
-## 📚 Documentation
+### Manejo de Errores
 
-- **[API Reference](doc/img/0_API_REFERENCE.md)** - Complete API documentation
-- **[Implementation Guide](doc/img/1_IMPLEMENTATION_GUIDE.md)** - Architecture and components
-- **[Image Processing](doc/img/2_IMAGE_PROCESSING.md)** - How image analysis works
-- **[Testing Strategy](doc/img/3_TESTING_STRATEGY.md)** - Testing approach and coverage
-- **[Postman Collection](doc/img/postman_collection.json)** - Ready-to-use API requests
+El sistema implementa degradación elegante:
+- Si falla la BD, la historia se genera pero no se persiste
+- El campo `validation.db` indica el estado de persistencia
+- Los errores se loggean pero no afectan la respuesta al usuario
 
----
+## 📚 Documentación Adicional
 
-## 🎨 Supported Formats
+Ver carpeta `doc/db/` para:
+- Guía de configuración detallada
+- Guía de Prisma
+- Troubleshooting
+- Ejemplos de API
+- Colección de Postman
 
-### Image Formats
+## 🤝 Contribuir
 
-- **JPEG** (.jpg, .jpeg)
-- **PNG** (.png)
-- **WEBP** (.webp)
+1. Fork el proyecto
+2. Crear feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push al branch (`git push origin feature/AmazingFeature`)
+5. Abrir Pull Request
 
-**Max Size:** 10 MB
+## 📄 Licencia
 
-### Tones
+MIT
 
-- **INSPIRACIONAL** - Uplifting, motivational narratives
-- **EDUCATIVO** - Informative, teaching-focused stories
-- **TÉCNICO** - Precise, technical descriptions
+## 👥 Equipo
 
-### Formats
-
-- **HISTORIA** - Full narrative structure
-- **POST** - Blog-style content
-- **REDES_SOCIALES** - Social media optimized (includes CTA)
-- **OTRO** - Custom format
-
----
-
-## 🛠️ Development
-
-### Linting
-
-```bash
-npm run lint          # Check for errors
-npm run lint:fix      # Auto-fix errors
-```
-
-### Formatting
-
-```bash
-npm run format        # Format code
-npm run format:check  # Check formatting
-```
-
-### Build
-
-```bash
-npm run build         # Compile TypeScript
-npm start             # Run production build
-```
+AutoStory Builder Team - NoCountry
 
 ---
 
-## 🔍 Troubleshooting
-
-### Common Issues
-
-**"COHERE_API_KEY is required"**
-- Add your Cohere API key to `.env` file
-
-**"File too large" (413)**
-- Compress your image to under 10MB
-
-**Timeout errors**
-- Check network connection to Cohere API
-- Verify API key is valid
-
-**Validation errors**
-- Ensure all required fields are present
-- Check tone and format values match allowed enums
-
----
-
-## 🚦 Roadmap
-
-### ✅ Phase 1 (Current)
-- Image processing with AI
-- Multi-tone/format support
-- Comprehensive testing
-
-### 🔜 Phase 2
-- PostgreSQL persistence
-- User authentication
-- CRUD endpoints
-- Frontend integration
-
-### 🌟 Phase 3+
-- RAG (Retrieval Augmented Generation)
-- OCR text extraction
-- Multi-image support
-- Export to PDF/DOCX
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Write tests (TDD)
-4. Implement feature
-5. Ensure all tests pass (`npm test`)
-6. Commit changes (`git commit -m 'Add amazing feature'`)
-7. Push to branch (`git push origin feature/amazing-feature`)
-8. Open Pull Request
-
----
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
----
-
-## 👥 Team
-
-AutoStory Builder Team - NoCountry Project
-
----
-
-## 🙏 Acknowledgments
-
-- [Cohere AI](https://cohere.com) - AI models
-- [Express](https://expressjs.com) - Web framework
-- [Zod](https://zod.dev) - Schema validation
-- [Jest](https://jestjs.io) - Testing framework
-
----
-
-**Built with ❤️ using TypeScript, Express, and Cohere AI**
+**Versión:** 2.0.0 (Fase 2)  
+**Última actualización:** Diciembre 2024

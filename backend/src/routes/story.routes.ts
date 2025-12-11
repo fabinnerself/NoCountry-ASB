@@ -1,23 +1,10 @@
-import { Router, RequestHandler } from 'express';
-import { StoryController } from '../controllers/story.controller';
-import { uploadImage, handleMulterError } from '../middleware/multer.middleware';
-import { validateRequest } from '../middleware/validation.middleware';
-import { StoryRequestSchema } from '../schemas/storyRequest.schema';
+import { Router } from 'express';
+import { generateStory } from '../controllers/story.controller';
+import { upload } from '../config/multer';
 
 const router = Router();
-const storyController = new StoryController();
 
-const generateStoryHandler: RequestHandler = (req, res, next) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  storyController.generateStory(req, res, next);
-};
-
-router.post(
-  '/generate-story',
-  uploadImage,
-  handleMulterError,
-  validateRequest(StoryRequestSchema),
-  generateStoryHandler
-);
+// POST /api/generate-story - Generar historia con IA
+router.post('/generate-story', upload.single('image'), generateStory);
 
 export default router;

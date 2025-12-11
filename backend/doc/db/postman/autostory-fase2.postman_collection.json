@@ -1,0 +1,261 @@
+{
+  "info": {
+    "name": "AutoStory Builder - Fase 2",
+    "description": "Colección de endpoints para AutoStory Builder con persistencia en PostgreSQL",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "autostory-team"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        },
+        "description": "Verifica el estado del servidor y la conexión a la base de datos"
+      },
+      "response": [
+        {
+          "name": "Success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"ok\",\n  \"version\": \"fase2\",\n  \"timestamp\": \"2024-12-10T15:30:00.000Z\",\n  \"database\": \"connected\",\n  \"services\": {\n    \"api\": \"ok\",\n    \"cohere\": \"configured\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Generate Story - Inspiracional (Solo Texto)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tone\": \"INSPIRACIONAL\",\n  \"format\": \"HISTORIA\",\n  \"text\": \"Juan, padre de 3 hijos, completó nuestro programa de emprendimiento. Ahora tiene su propia panadería y emplea a 2 personas de su comunidad.\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/generate-story",
+          "host": ["{{base_url}}"],
+          "path": ["api", "generate-story"]
+        },
+        "description": "Genera una historia con tono inspiracional en formato de historia completa"
+      },
+      "response": []
+    },
+    {
+      "name": "Generate Story - Educativo",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tone\": \"EDUCATIVO\",\n  \"format\": \"POST\",\n  \"text\": \"Proyecto de reciclaje comunitario que redujo residuos en 75%. Se capacitaron 50 familias y se crearon 3 microempresas verdes.\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/generate-story",
+          "host": ["{{base_url}}"],
+          "path": ["api", "generate-story"]
+        },
+        "description": "Genera una historia con tono educativo en formato de post"
+      },
+      "response": []
+    },
+    {
+      "name": "Generate Story - Técnico",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tone\": \"TÉCNICO\",\n  \"format\": \"POST\",\n  \"text\": \"Implementación de arquitectura cloud-first con microservicios. ROI del 240% en 12 meses. 85% adopción usuario final.\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/generate-story",
+          "host": ["{{base_url}}"],
+          "path": ["api", "generate-story"]
+        },
+        "description": "Genera una historia con tono técnico en formato de post"
+      },
+      "response": []
+    },
+    {
+      "name": "Generate Story - Redes Sociales",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tone\": \"inspiracional\",\n  \"format\": \"redes sociales\",\n  \"text\": \"María, maestra rural, transformó su escuela con creatividad y dedicación. Hoy es un faro de esperanza para toda la comunidad.\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/generate-story",
+          "host": ["{{base_url}}"],
+          "path": ["api", "generate-story"]
+        },
+        "description": "Genera una historia corta para redes sociales (80-120 palabras)"
+      },
+      "response": []
+    },
+    {
+      "name": "Generate Story - Con Imagen",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "tone",
+              "value": "INSPIRACIONAL",
+              "type": "text"
+            },
+            {
+              "key": "format",
+              "value": "POST",
+              "type": "text"
+            },
+            {
+              "key": "text",
+              "value": "Taller de carpintería donde jóvenes aprenden un oficio y construyen su futuro",
+              "type": "text"
+            },
+            {
+              "key": "image",
+              "type": "file",
+              "src": [],
+              "description": "Selecciona una imagen desde tu computadora"
+            },
+            {
+              "key": "id_usuario",
+              "value": "user123",
+              "type": "text",
+              "description": "ID del usuario (opcional)"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/generate-story",
+          "host": ["{{base_url}}"],
+          "path": ["api", "generate-story"]
+        },
+        "description": "Genera una historia con imagen adjunta. Usa multipart/form-data para enviar archivos."
+      },
+      "response": []
+    },
+    {
+      "name": "Generate Story - Con ID Usuario",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tone\": \"inspiracional\",\n  \"format\": \"historia\",\n  \"text\": \"Un dragón en las montañas descubre su verdadero propósito\",\n  \"id_usuario\": \"user123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/generate-story",
+          "host": ["{{base_url}}"],
+          "path": ["api", "generate-story"]
+        },
+        "description": "Genera una historia asociada a un ID de usuario"
+      },
+      "response": []
+    },
+    {
+      "name": "Generate Story - Error: Sin Tone",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"format\": \"post\",\n  \"text\": \"Una historia sin tone\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/generate-story",
+          "host": ["{{base_url}}"],
+          "path": ["api", "generate-story"]
+        },
+        "description": "Ejemplo de error: falta el campo tone (requerido)"
+      },
+      "response": []
+    },
+    {
+      "name": "Generate Story - Error: Tone Inválido",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tone\": \"romantico\",\n  \"format\": \"post\",\n  \"text\": \"Una historia con tone inválido\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/generate-story",
+          "host": ["{{base_url}}"],
+          "path": ["api", "generate-story"]
+        },
+        "description": "Ejemplo de error: tone inválido (valores permitidos: inspiracional, educativo, tecnico)"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
+}

@@ -1,21 +1,39 @@
 version: '3.8'
 
 services:
+  # Backend API - Conectado a NeonDB Cloud
   backend:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8000:10000"
-    env_file:
-      - .env
+    container_name: autostory-backend
     environment:
-      - NODE_ENV=production
-      - PORT=10000
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-8000}
+      # DATABASE_URL debe venir del .env con la URL de NeonDB
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required - debe apuntar a NeonDB}
+      COHERE_API_KEY: ${COHERE_API_KEY:?COHERE_API_KEY is required}
+      COHERE_MODEL: ${COHERE_MODEL:-command-r7b-12-2024}
+      FRONTEND_URL_LOCAL: ${FRONTEND_URL_LOCAL:-http://localhost:3000}
+      FRONTEND_URL: ${FRONTEND_URL:-https://asb-delta.vercel.app}
+    ports:
+      - "${PORT:-8000}:${PORT:-8000}"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
     restart: unless-stopped
+    command: >
+      sh -c "
+        echo '🔍 Verificando conexión a NeonDB...' &&
+        echo '🗄️  Aplicando migraciones en NeonDB...' &&
+        npx prisma migrate deploy &&
+        echo '✅ Migraciones aplicadas exitosamente' &&
+        echo '🚀 Iniciando servidor...' &&
+        npm start
+      "
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:10000/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${PORT:-8000}/health"]
       interval: 30s
-      timeout: 10s
+      timeout: 5s
+      start_period: 60s
       retries: 3
-      start_period: 40s

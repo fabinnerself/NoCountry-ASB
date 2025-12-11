@@ -1,0 +1,31 @@
+
+mejorar y ordenar ideas y braisntorm del documento @brainstorm-f1.txt , el resultado debe denominarse 0brainstorm-f1.md
+
+ mejorar y ordenar ideas y braisntorm del documento brainstorm-f2.txt , el resultado debe denominarse 0brainstorm-f2.md
+
+desarrollar documento de especificaciones con definicion "specify
+ se usa para definir el "qué" y el "por qué" del proyecto. Esto funciona como un Documento de Requisitos del Producto (PRD), centrándose en la motivación y el esquema, no en los aspectos técnicos. El spec generado contiene requisitos funcionales y utiliza una plantilla incorporada y un documento de constitución."
+ conSiderar documento spec_iteracion0.md 
+
+desarollar plan con defincion "plan 
+se usa para delinear los requisitos técnicos. Esto incluye especificar las librerías, el framework a usar o cualquier restricción, como asegurar que las pruebas se escriban antes que el código.  El plan también genera información detallada como contratos de datos, metadatos investigados sobre las herramientas y frameworks utilizados, guías de inicio rápido (quick start) y los componentes del proyecto." basado en el documento de especificaciones @/01antece/spec_iteracion0.md"
+
+desarrollar documento de task con defincion " tasks 
+Descompone el proyecto en fragmentos manejables para que el agente de IA los implemente individualmente. El resultado de tasks es un archivo markdown que contiene una lista de tareas agrupadas por fases específicas, que aparecen como casillas de verificación (checkboxes) para permitir el seguimiento automático del progreso del agente"
+consierar y basarse en documentos @/01antece/plan_iteracion0.md  @/01antece/spec_iteracion0.md"  @/01antece/iteracion0.md"
+
+
+crea directorio 0code y en ese directorio desarrollar lo esepcificado en @/01antece/tasks_iteracion0.md  considerar tambien documentos de especificacion y lanificacion.
+
+denominar al archvio resultante 3task_asb_f0.md
+
+
+crea directorio 0code y en ese directorio desarrollar lo especificado en documentos 1SPEC_ASB_F0.md, 2Plan_asb_f0.md,  3task_asb_f0.md 
+
+test-image.jpg
+test-image.png
+test-image.webp
+
+
+crea directorio 0code y en ese directorio desarrollar lo esepcificado en 3task-f1.md, ademas tomar en cuenta 2plan-f1.md y 1spec-f1.md
+finalmente existe info de anterior etapa en dir ./fase0

@@ -1,33 +1,36 @@
 services:
   - type: web
-    name: autostory-backend proy
+    name: autostory-backend-fase2
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
+    plan: free
+    region: oregon
     envVars:
+      # Server Configuration
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
+      
+      # API Keys (configurar en Render Dashboard)
       - key: COHERE_API_KEY
         sync: false
-      - key: DATABASE_URL
-        sync: false
-      - key: FRONTEND_URL
-        sync: false
-      - key: FRONTEND_URL_LOCAL
-        value: http://localhost:5173
       - key: COHERE_MODEL
         value: command-r7b-12-2024
-      - key: COHERE_TEMPERATURE
-        value: "0.7"
-      - key: COHERE_MAX_TOKENS
-        value: "500"
-      - key: TEXT_MIN_LENGTH
-        value: "20"
-      - key: TEXT_MAX_LENGTH
-        value: "1000"
-      - key: STORY_MIN_WORDS
-        value: "80"
-      - key: STORY_MAX_WORDS
-        value: "120"
+      
+      # Database (configurar en Render Dashboard con NeonDB URL)
+      - key: DATABASE_URL
+        sync: false
+      
+      # Frontend URLs
+      - key: FRONTEND_URL
+        value: https://asb-delta.vercel.app
+      - key: FRONTEND_URL_LOCAL
+        value: http://localhost:3000
+    
+    # Build command (ejecutado antes de iniciar)
+    buildCommand: npx prisma migrate deploy
+    
+    # Health check
+    healthCheckPath: /health

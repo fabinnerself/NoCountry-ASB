@@ -1,46 +1,111 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { StoryGeneratorService } from '../services/storyGenerator.service';
-import { ValidTone, ValidFormat } from '../constants/validation';
+import { StoryRepository } from '../repositories/story.repository';
 import logger from '../utils/logger';
 
-export class StoryController {
-  private storyGenerator: StoryGeneratorService;
+const storyGeneratorService = new StoryGeneratorService();
 
-  constructor() {
-    this.storyGenerator = new StoryGeneratorService();
-  }
+export const generateStory = async (req: Request, res: Response): Promise<void> => {
+  const startTime = Date.now();
+  
+  try {
+    // Validar inputs
+    const { tone, format, text, id_usuario } = req.body;
+    
+    if (!tone || !format) {
+      res.status(400).json({
+        success: false,
+        error: 'Los campos tone y format son requeridos'
+      });
+      return;
+    }
 
-  async generateStory(req: Request, res: Response, next: NextFunction): Promise<void> {
+    // Validar valores permitidos
+    const validTones = ['inspiracional', 'educativo', 'tecnico'];
+    const validFormats = ['historia', 'post', 'redes sociales', 'otro'];
+    
+    if (!validTones.includes(tone.toLowerCase())) {
+      res.status(400).json({
+        success: false,
+        error: `Tono inválido. Valores permitidos: ${validTones.join(', ')}`
+      });
+      return;
+    }
+
+    if (!validFormats.includes(format.toLowerCase())) {
+      res.status(400).json({
+        success: false,
+        error: `Formato inválido. Valores permitidos: ${validFormats.join(', ')}`
+      });
+      return;
+    }
+
+    // Obtener imagen si fue subida
+    const imageFile = req.file ? req.file.filename : undefined;
+
+    logger.info('Generating story', { tone, format, hasText: !!text, hasImage: !!imageFile });
+
+    // Generar historia con IA
+    const generatedStory = await storyGeneratorService.generate({
+      tone,
+      format,
+      text,
+      image: imageFile
+    });
+
+    // Intentar persistir en base de datos
+    let dbValidation: { db: string; message?: string } = { db: 'ok' };
+    
     try {
-      const { tone, format, text } = req.body as { tone: string; format: string; text: string };
-      const buffer = req.file?.buffer;
-      const mimetype = req.file?.mimetype;
-
-      logger.info('Generating story', {
+      const storyRepository = new StoryRepository();
+      await storyRepository.create({
         tone,
         format,
-        textLength: text?.length ?? 0,
-        imageSize: buffer?.length ?? 0,
-        hasImage: !!req.file,
+        text,
+        image: imageFile,
+        generatedStory,
+        idUsuario: id_usuario
       });
-
-      const response = await this.storyGenerator.generateStory(
-        tone as ValidTone,
-        format as ValidFormat,
-        text || '',
-        buffer,
-        mimetype
-      );
-
-      logger.info('Story generated successfully', {
-        wordCount: response.metadata.wordCount,
-        processingTime: response.metadata.processingTimeMs,
-      });
-
-      res.status(200).json(response);
-    } catch (error) {
-      logger.error('Error in story controller', { error });
-      next(error);
+      
+      logger.info('Story persisted successfully in database');
+    } catch (dbError) {
+      logger.error('Database persistence error:', dbError);
+      dbValidation = {
+        db: 'error',
+        message: 'Error al guardar historia en base de datos'
+      };
     }
+
+    const processingTime = Date.now() - startTime;
+
+    // Respuesta exitosa
+    res.json({
+      success: true,
+      story: generatedStory,
+      metadata: {
+        tone,
+        format,
+        hasImage: !!imageFile,
+        processingTimeMs: processingTime
+      },
+      validation: {
+        input: 'ok',
+        generation: 'ok',
+        ...dbValidation
+      }
+    });
+
+  } catch (error) {
+    logger.error('Error in generateStory controller:', error);
+    
+    const processingTime = Date.now() - startTime;
+    
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Error al generar la historia',
+      metadata: {
+        processingTimeMs: processingTime
+      }
+    });
   }
-}
+};

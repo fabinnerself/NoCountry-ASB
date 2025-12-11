@@ -47,12 +47,115 @@ Desarrollar un agente de inteligencia artificial capaz de generar historias visu
 *   Tres historias generadas con distintos tonos narrativos.
 *   Documentación de endpoints y flujo de uso.
 
+## 🏗️ Arquitectura del Proyecto
+
+### Frontend
+- **Framework**: React + TypeScript + Vite
+- **Deployment**: Vercel
+- **URL**: https://asb-delta.vercel.app/
+
+### Backend (Fase 2)
+- **Framework**: Node.js + Express + TypeScript
+- **Base de Datos**: PostgreSQL con Prisma ORM
+- **IA**: Cohere API para generación de historias
+- **Deployment**: Render
+- **URL**: https://nocountry-asb.onrender.com
+
 ## 🚀 Cómo Correr el Código
 
-Para instrucciones detalladas sobre cómo ejecutar cada parte del proyecto, por favor refiérase a los archivos README específicos en cada directorio:
+### Frontend
 
-1.  **Frontend**: Ir al directorio `frontend` y revisar el archivo `README.md`.
-2.  **Backend**: Ir al directorio `backend` y revisar el archivo `README.md`.
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Ver documentación completa en `frontend/README.md`
+
+### Backend (Fase 2 - Con Persistencia)
+
+**Inicio Rápido:**
+
+```bash
+cd backend
+npm install
+cp .env.example .env
+# Editar .env con tus credenciales
+npm run prisma:generate
+npm run prisma:migrate
+npm run dev
+```
+
+**Requisitos:**
+- Node.js 18+
+- PostgreSQL 15+ (local o NeonTech)
+- Cohere API Key
+
+Ver documentación completa en:
+- `backend/README.md` - Documentación principal
+- `backend/QUICK_START.md` - Inicio rápido
+- `backend/doc/db/SETUP.md` - Configuración detallada
+
+## 📊 Fases del Proyecto
+
+### ✅ Fase 0 - Prototipo Inicial
+- Diseño de arquitectura
+- Definición de requisitos
+- Prototipo básico
+
+### ✅ Fase 1 - MVP Funcional
+- Frontend con React + TypeScript
+- Backend con generación de historias (Cohere API)
+- Deployment en Vercel + Render
+
+### ✅ Fase 2 - Persistencia en Base de Datos (ACTUAL)
+- Integración de PostgreSQL con Prisma ORM
+- Almacenamiento de todas las historias generadas
+- Health check con estado de BD
+- Degradación elegante ante fallos
+- Documentación completa
+
+### 🔜 Fase 3 - Futuras Mejoras
+- Autenticación de usuarios
+- Historial de historias por usuario
+- Versionado de historias
+- Búsqueda y filtrado avanzado
+- Analytics y métricas
+
+## 🛠️ Stack Tecnológico
+
+### Frontend
+- React 18
+- TypeScript
+- Vite
+- TailwindCSS
+
+### Backend
+- Node.js + Express
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- Winston (logging)
+- Multer (file uploads)
+- Cohere API (IA)
+
+### DevOps
+- Git + GitHub
+- Vercel (Frontend)
+- Render (Backend)
+- NeonTech (PostgreSQL Cloud)
+
+## 📚 Documentación
+
+- **Frontend**: `frontend/README.md`
+- **Backend**: `backend/README.md`
+- **Base de Datos**: `backend/doc/db/`
+  - Setup: `backend/doc/db/SETUP.md`
+  - Prisma Guide: `backend/doc/db/PRISMA_GUIDE.md`
+  - Troubleshooting: `backend/doc/db/TROUBLESHOOTING.md`
+  - API Examples: `backend/doc/db/API_EXAMPLES.md`
+- **Planificación**: `doc/plan/`
 
 ---
-(C) Noviembre 2025 NoCountry
+(C) Diciembre 2024 NoCountry
