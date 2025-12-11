@@ -11,14 +11,14 @@ model Story {
   id             String   @id @default(uuid()) @db.Uuid
   tone           String   @db.VarChar(50)
   format         String   @db.VarChar(50)
-  text           String?  @db.Text
-  image          String?  @db.Text
-  generatedStory String   @map("generated_story") @db.Text
+  text           String?
+  image          String?
+  generatedStory String   @map("generated_story")
   idUsuario      String?  @map("id_usuario") @db.VarChar(100)
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
-  version        String   @default("fase2") @db.VarChar(20)
-  errorMessage   String?  @map("error_message") @db.Text
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  version        String   @default("1.0") @db.VarChar(20)
+  errorMessage   String?  @map("error_message")
 
   @@index([createdAt])
   @@index([idUsuario])

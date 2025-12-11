@@ -59,8 +59,8 @@ export function FormPage() {
   };
 
   const handleGenerate = async () => {
-    //let urlBE ="http://localhost:8000/api/generate-story"
-    let urlBE ="https://nocountry-asb.onrender.com/api/generate-story"
+    //let urlBE = "http://localhost:8000/api/generate-story"
+    let urlBE = "https://nocountry-asb.onrender.com/api/generate-story"
     setValidationError(null);
 
     // Validate text content
@@ -78,7 +78,7 @@ export function FormPage() {
       formData.append('tone', tone);
       formData.append('format', format);
       formData.append('text', textContent);
-      
+
       // Add image if one is selected
       if (files.length > 0) {
         formData.append('image', files[0]); // Send first image
@@ -188,7 +188,7 @@ export function FormPage() {
               </p>
 
               <p className="font-['Inter',sans-serif] text-[20px] md:text-[24px] text-[#3f3f3f] text-center">
-                Soporte: JPG, PNG, WEBP, videos, testimonios &lt; 10 MB
+                Soporte: JPG , PNG  y &lt; 10 MB
               </p>
 
               {files.length > 0 && (
@@ -242,7 +242,7 @@ export function FormPage() {
               >
                 <option value="INSPIRACIONAL">INSPIRACIONAL</option>
                 <option value="EDUCATIVO">EDUCATIVO</option>
-                <option value="TÉCNICO">TÉCNICO</option>
+                <option value="TECNICO">TÉCNICO</option>
               </select>
               <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                 <svg className="w-[33px] h-[33px]" fill="none" viewBox="0 0 33 33">
@@ -264,7 +264,6 @@ export function FormPage() {
                 <option value="HISTORIA">HISTORIA</option>
                 <option value="POST">POST</option>
                 <option value="REDES SOCIALES">REDES SOCIALES</option>
-                <option value="OTRO">OTRO</option>
               </select>
               <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                 <svg className="w-[33px] h-[33px]" fill="none" viewBox="0 0 33 33">
@@ -300,21 +299,9 @@ export function FormPage() {
 
               {/* Edit and Retry Links */}
               <div className="flex justify-between items-center mb-6 max-w-[1250px] mx-auto">
-                <button
-                  onClick={handleEdit}
-                  className="flex items-center gap-2 text-emerald-500 hover:text-emerald-600 transition-colors"
-                >
-                  <Edit className="w-[48px] h-[48px]" strokeWidth={1.5} />
-                  <span className="font-['Inter',sans-serif] text-[24px]">Editar</span>
-                </button>
 
-                <button
-                  onClick={handleRetry}
-                  className="flex items-center gap-2 text-emerald-500 hover:text-emerald-600 transition-colors"
-                >
-                  <RefreshCcw className="w-[48px] h-[48px]" strokeWidth={1.5} />
-                  <span className="font-['Inter',sans-serif] text-[24px]">Reintentar</span>
-                </button>
+
+
               </div>
 
               {/* Export Button */}
