@@ -306,13 +306,7 @@ export function FormPage() {
 
               {/* Export Button */}
               <div className="flex justify-center">
-                <button
-                  onClick={handleExport}
-                  className="bg-[#041f59] rounded-[15px] px-16 py-6 font-['Julius_Sans_One',sans-serif] text-[32px] md:text-[40px] text-white hover:bg-[#062a7a] transition-colors flex items-center gap-4"
-                >
-                  EXPORTAR
-                  <Download className="w-[62px] h-[62px]" />
-                </button>
+
               </div>
             </div>
           )}
