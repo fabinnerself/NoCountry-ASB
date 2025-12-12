@@ -187,7 +187,7 @@ export function LandingPage() {
 
           <p className="font-['Inter',sans-serif] text-[20px] md:text-[24px] text-slate-800 mt-8">
             *Para más información{" "}
-            <a href="https://www.youtube.com/shorts/Pu8rMTgJnHQ?feature=share" className="underline hover:text-emerald-500 transition-colors" target="_blank">
+            <a href="https://youtu.be/SE1MXLYM3hc" className="underline hover:text-emerald-500 transition-colors" target="_blank">
               ver video
             </a>
             .

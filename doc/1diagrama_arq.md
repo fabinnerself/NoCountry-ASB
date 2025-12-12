@@ -22,6 +22,7 @@ C4Context
     Rel(sistema, almacenamiento, "Lee y escribe historial de historias generadas", "PostgreSQL Protocol")
 ```
 
+
 ## 2. Diagrama de Contenedores (Nivel 2)
 
 Este diagrama profundiza en el sistema para mostrar los contenedores (aplicaciones ejecutables) que lo componen y sus interacciones.
@@ -45,6 +46,8 @@ C4Container
     Rel(api, db, "Lectura/Escritura", "Prisma ORM")
     Rel(api, cohere, "Generación de texto", "HTTPS")
 ```
+
+
 
 ## 3. Descripción de Componentes
 

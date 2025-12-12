@@ -7,7 +7,7 @@ Puede visitar la plataforma FrontEnd en línea en :  https://asb-delta.vercel.ap
 
 El endpoint esta disponible en linea en : [health](https://nocountry-asb.onrender.com/health)
 
-Documentacion de la API en : [API](https://documenter.getpostman.com/view/22674808/2sB3dSQUdM)
+Documentacion de la API en Postman : [API](https://documenter.getpostman.com/view/22674808/2sB3dSQUdM)
 
 
 ### Integrantes
@@ -158,6 +158,8 @@ Ver documentación completa en:
   - Troubleshooting: `backend/doc/db/TROUBLESHOOTING.md`
   - API Examples: `backend/doc/db/API_EXAMPLES.md`
 - **Planificación**: `doc/plan/`
+- Diagrama Entidad Relacion ![ER](doc/er_asb.png)
+- Diseño Figma [Diseño](https://www.figma.com/design/rzP9Zo2JxkZAshv80Vm6Rd/Auto-story?node-id=0-1&p=f&t=zyNQXPEhjf2jtOr5-0)
 
 ---
 (C) Diciembre 2024 NoCountry
