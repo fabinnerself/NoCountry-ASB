@@ -1,20 +1,20 @@
 # 👩‍🚀 AutoStory Builder
 
-## 👥 Equipo
+## 👥 Equipo 06
 **S11-25-Equipo 06-AI Agent**
 
-Puede visitar la plataforma FrontEnd en línea en :  https://asb-delta.vercel.app/ 
+Puedes visitar la plataforma FrontEnd en línea en :  https://asb-delta.vercel.app/ 
 
 El endpoint esta disponible en linea en : [health](https://nocountry-asb.onrender.com/health)
 
 Documentacion de la API en Postman : [API](https://documenter.getpostman.com/view/22674808/2sB3dSQUdM)
 
+Nocountry Showcase : [Showcase](https://nocountry.tech/simulacion-laboral-noviembre-2025/cmhow54x70027m001tb14gy2k)
 
-### Integrantes
-*   **Mel Zárate** (Argentina) - Machine Learning
-*   **Carla Dabalos** (Perú) - Machine Learning
-*   **Micaela Callahuanca** (Argentina) - AI Engineer
-*   **Agustin Ammazzagatti** (Argentina) - Machine Learning
+Video demostracion : [Video](https://youtu.be/SE1MXLYM3hc)
+ 
+
+### Integrante
 *   **Favian Medina** (Bolivia)
     *   📞 [Whatsapp](https://wa.me/59167023053)
     *   ✉️ favian.medina.gemio@gmail.com
@@ -22,6 +22,8 @@ Documentacion de la API en Postman : [API](https://documenter.getpostman.com/vie
     *   💼 [LinkedIn](https://www.linkedin.com/in/favian-medina-gemio)
 
 ## 📄 Descripción del Proyecto
+
+## 👩‍🚀 AutoStory Builder
 
 ### Sector de Negocios
 Cross-industry
@@ -38,6 +40,15 @@ Desarrollar un agente de inteligencia artificial capaz de generar historias visu
 *   Creación automática de una narrativa coherente y con tono configurable (inspiracional, educativo, técnico).
 *   Posibilidad de exportar el resultado en formato Imagen, PDF o publicación web.
 *   Panel para revisar, editar y versionar las historias generadas.
+
+### Integración con API de LLM a eleccion.
+Posibilidad de usar CLIP o modelo multimodal para análisis de imagen.
+Front minimalista.
+Entregables esperados
+
+### Prototipo funcional del generador.
+Tres historias generadas con distintos tonos narrativos.
+Documentación de endpoints y flujo de uso.
 
 ### Requerimientos Técnicos
 *   Integración con API de LLM a elección.
@@ -159,7 +170,7 @@ Ver documentación completa en:
   - API Examples: `backend/doc/db/API_EXAMPLES.md`
 - **Planificación**: `doc/plan/`
 - Diagrama Entidad Relacion ![ER](doc/er_asb.png)
-- Diseño Figma [Diseño](https://www.figma.com/design/rzP9Zo2JxkZAshv80Vm6Rd/Auto-story?node-id=0-1&p=f&t=zyNQXPEhjf2jtOr5-0)
+- Diseño Figma [Figma](https://www.figma.com/design/rzP9Zo2JxkZAshv80Vm6Rd/Auto-story?node-id=0-1&p=f&t=zyNQXPEhjf2jtOr5-0)
 
 ---
 (C) Diciembre 2024 NoCountry
