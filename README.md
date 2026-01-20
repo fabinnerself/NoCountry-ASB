@@ -67,7 +67,7 @@ Documentación de endpoints y flujo de uso.
 - **Deployment**: Vercel
 - **URL**: https://asb-delta.vercel.app/
 
-### Backend (Fase 2)
+### Backend 
 - **Framework**: Node.js + Express + TypeScript
 - **Base de Datos**: PostgreSQL con Prisma ORM
 - **IA**: Cohere API para generación de historias
@@ -104,11 +104,12 @@ npm run dev
 - Node.js 18+
 - PostgreSQL 15+ (local o NeonTech)
 - Cohere API Key
+ 
+La documentación completa se encuentra en los siguientes archivos:
 
-Ver documentación completa en:
-- `backend/README.md` - Documentación principal
-- `backend/QUICK_START.md` - Inicio rápido
-- `backend/doc/db/SETUP.md` - Configuración detallada
+- README.md (raíz del proyecto) Documentación principal
+- backend/README.md 
+- frontend/README.md
 
 ## 📊 Fases del Proyecto
 
@@ -135,6 +136,7 @@ Ver documentación completa en:
 - Versionado de historias
 - Búsqueda y filtrado avanzado
 - Analytics y métricas
+- Implementacion de RAG con pgvector implementada en Supabase
 
 ## 🛠️ Stack Tecnológico
 
