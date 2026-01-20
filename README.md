@@ -170,7 +170,12 @@ La documentación completa se encuentra en los siguientes archivos:
   - Prisma Guide: `backend/doc/db/PRISMA_GUIDE.md`
   - Troubleshooting: `backend/doc/db/TROUBLESHOOTING.md`
   - API Examples: `backend/doc/db/API_EXAMPLES.md`
+  - Diccionario de datos: `doc/dicionario_dato.md`
+  - Estructura de BD: `backend\prisma\schema.prisma`
 - **Planificación**: `doc/plan/`
+- **Backlog Scrum:** `doc/scrum.md`
+- **Documentacion ISO**: `doc/doc_asb.md`
+
 - Diagrama Entidad Relacion ![ER](doc/er_asb.png)
 - Diseño Figma [Figma](https://www.figma.com/design/rzP9Zo2JxkZAshv80Vm6Rd/Auto-story?node-id=0-1&p=f&t=zyNQXPEhjf2jtOr5-0)
 
